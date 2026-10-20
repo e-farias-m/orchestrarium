@@ -1,0 +1,19 @@
+{
+  "name": "Orchestrarium — Instruments of the Orchestra",
+  "short_name": "Orchestrarium",
+  "description": "Learn about the instruments of the orchestra. Free, offline-first, for K-8 students.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f1eb",
+  "theme_color": "#c05621",
+  "categories": ["education", "music"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

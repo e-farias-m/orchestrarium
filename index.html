@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" data-tier="1">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Orchestrarium — Instruments of the Orchestra</title>
+  <meta name="description" content="Learn about the instruments of the orchestra. Free, offline-first, for K-8 students.">
+  <meta name="theme-color" content="#c05621">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Orchestrarium">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Pre-paint: apply saved tier + language before first frame to avoid flash
+    (function () {
+      try {
+        var tier = localStorage.getItem('orchestrariumTier');
+        if (tier === '2' || tier === '3') {
+          document.documentElement.setAttribute('data-tier', tier);
+        }
+        var lang = localStorage.getItem('orchestrariumLang');
+        if (lang === 'pt') document.documentElement.setAttribute('lang', 'pt-BR');
+      } catch (e) { /* private mode etc. */ }
+    })();
+  </script>
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <script src="js/i18n.js"></script>
+  <script src="js/instruments.js"></script>
+  <script src="js/graphics.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/games.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>

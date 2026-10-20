@@ -312,6 +312,8 @@
     'alto-sax': true, 'english-horn': true, 'bass-clarinet': true,
     trumpet: true, 'french-horn': true, trombone: true, tuba: true,
     'snare-drum': true, triangle: true, 'bass-drum': true, 'tam-tam': true,
+    harp: true, timpani: true, piccolo: true, glockenspiel: true,
+    piano: true, marimba: true,
   };
 
   function sampleExists(id) { return !!WITH_SAMPLES[id]; }

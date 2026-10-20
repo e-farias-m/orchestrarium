@@ -494,10 +494,13 @@
     out.push('<p>', t('Orchestrarium'), ' — ', t('Instruments of the Orchestra'), '</p>');
     out.push('<p style="margin-top:var(--sp-4)">',
       'Instrument recordings: <a href="https://philharmonia.co.uk/" target="_blank" rel="noopener">Philharmonia Orchestra</a> ',
-      'sample library (CC BY-SA 3.0).</p>');
+      'sample library (CC BY-SA 3.0) and ',
+      '<a href="https://github.com/sgossner/VSCO-2-CE" target="_blank" rel="noopener">VSCO 2: Community Edition</a> (CC0 1.0).</p>');
     out.push('<p style="margin-top:var(--sp-3)">',
       'Orchestral excerpt: W. A. Mozart, <em>Le nozze di Figaro</em> Overture — ',
       'via <a href="https://archive.org/" target="_blank" rel="noopener">Musopen</a> (public domain / CC0).</p>');
+    out.push('<p style="margin-top:var(--sp-3)">',
+      'Celesta and voice use built-in synthesized tones.</p>');
     out.push('<p style="margin-top:var(--sp-3)">',
       'Built with the Web Audio API. No tracking, no ads.</p>');
     out.push('<button class="audio-btn secondary" data-action="back" style="margin-top:var(--sp-5);max-width:200px">',

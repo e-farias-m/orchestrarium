@@ -1,4 +1,4 @@
-const CACHE = 'orchestrarium-v1';
+const CACHE = 'orchestrarium-v2';
 const PRECACHE = [
   '/',
   '/index.html',
@@ -15,7 +15,11 @@ const PRECACHE = [
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting())
+    caches.open(CACHE).then((c) =>
+      Promise.all(
+        PRECACHE.map((url) => c.add(url).catch(() => null))
+      )
+    ).then(() => self.skipWaiting())
   );
 });
 

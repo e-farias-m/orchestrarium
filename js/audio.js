@@ -6,11 +6,15 @@
      2. Samples — real Philharmonia recordings loaded on demand
                  from audio/samples/<id>.mp3, cached in memory.
    Plus Figaro orchestral excerpts with individual stem playback
-   (mute/unmute per instrument) for higher tiers.
+   (mute/unmute per instrument) for higher tiers, streamed via native
+   <audio> elements to keep memory small.
    Exposes window.Audio.
    ============================================================ */
 (function () {
   'use strict';
+
+  /* Save native Audio constructor before overwriting window.Audio */
+  var NativeAudio = (typeof window !== 'undefined' && window.Audio) ? window.Audio : (typeof Audio !== 'undefined' ? Audio : null);
 
   var Audio = {
     ctx: null,
@@ -21,8 +25,6 @@
 
     /* Sample cache: id -> { buffer, loading, error } */
     _samples: {},
-    /* Decoded excerpt cache */
-    _excerpts: {},
     _current: null,
     _currentStems: [],
   };
@@ -320,40 +322,38 @@
 
   /* ================================================================
      ORCHESTRAL EXCERPTS (Figaro) with per-stem control
+     ----------------------------------------------------------------
+     Long (4 min) multitrack stems are played through native <audio>
+     elements, NOT decoded into Web Audio buffers. Decoding would hold
+     ~45 MB of PCM per stem (~600 MB for the 13-stem mixer) in memory;
+     <audio> streams from disk/network and is evicted by the browser,
+     keeping the footprint tiny on low-end K-8 devices.
+     Trade-off: stems start within a few ms of each other rather than
+     sample-accurate — imperceptible for listening/mute demos.
      ================================================================ */
-  function loadExcerpt(url) {
-    if (Audio._excerpts[url]) return Promise.resolve(Audio._excerpts[url]);
-    var ctx = ensureCtx();
-    if (!ctx) return Promise.reject(new Error('no audio context'));
-    return fetch(url)
-      .then(function (res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.arrayBuffer();
-      })
-      .then(function (ab) { return ctx.decodeAudioData(ab); })
-      .then(function (buf) {
-        Audio._excerpts[url] = buf;
-        return buf;
-      });
+  var EXCERPT_BASE_VOLUME = 0.8;
+
+  function makeStemEl(url) {
+    var el = new NativeAudio(url);
+    el.preload = 'auto';
+    el.crossOrigin = 'anonymous';
+    el.volume = EXCERPT_BASE_VOLUME;
+    return el;
   }
 
   /**
-   * Play an orchestral excerpt, optionally muting/soloing stems.
+   * Play a single orchestral stem/excerpt (featured or premix).
    * @param {string} url - premix or stem URL
-   * @param {object} [opts] - { start, gain }
    * @returns {Promise}
    */
-  function playExcerpt(url, opts) {
-    opts = opts || {};
-    ensureCtx(); resume();
+  function playExcerpt(url) {
     stopAll();
-    return loadExcerpt(url).then(function (buf) {
-      var node = playBuffer(buf, Audio.ctx.currentTime + 0.02,
-        opts.gain == null ? 0.85 : opts.gain);
-      Audio._current = node;
-      Audio._currentType = 'excerpt';
-      return node;
-    });
+    var el = makeStemEl(url);
+    Audio._current = el;
+    Audio._currentType = 'excerpt';
+    Audio._currentStems = [{ url: url, el: el, muted: false }];
+    var p = el.play();
+    return p && p.catch ? p.catch(function () {}) : Promise.resolve();
   }
 
   /**
@@ -363,41 +363,43 @@
   function playStem(instrumentId) {
     var inst = INSTRUMENTS.get(instrumentId);
     if (!inst || !inst.excerpt) return Promise.resolve();
-    return playExcerpt(inst.excerpt.stem, { gain: 1 });
+    return playExcerpt(inst.excerpt.stem);
   }
 
   /**
-   * Play all Figaro stems together (full orchestral texture),
-   * silent-until-ready. Stems are optional; missing ones are skipped.
+   * Play all Figaro stems together (full orchestral texture).
+   * Stems are lazy: only the ones not muted are loaded and played.
    * @param {Array<string>} stemUrls
    * @param {object} [muteMap] - { url: true } to mute
    */
   function playStems(stemUrls, muteMap) {
-    ensureCtx(); resume();
     stopAll();
     muteMap = muteMap || {};
-    var ctx = Audio.ctx;
-    var startAt = ctx.currentTime + 0.08;
-    return Promise.all(stemUrls.map(function (url) {
-      return loadExcerpt(url).catch(function () { return null; });
-    })).then(function (buffers) {
-      var nodes = [];
-      for (var i = 0; i < buffers.length; i++) {
-        if (!buffers[i]) continue;
-        var muted = !!muteMap[stemUrls[i]];
-        var node = playBuffer(buffers[i], startAt, muted ? 0 : 0.8);
-        nodes.push({ url: stemUrls[i], node: node, muted: muted });
+    var nodes = [];
+    stemUrls.forEach(function (url) {
+      var muted = !!muteMap[url];
+      var el = makeStemEl(url);
+      el.volume = muted ? 0 : EXCERPT_BASE_VOLUME;
+      nodes.push({ url: url, el: el, muted: muted });
+      if (!muted) {
+        var p = el.play();
+        if (p && p.catch) p.catch(function () {});
       }
-      Audio._currentStems = nodes;
-      return nodes;
     });
+    Audio._currentStems = nodes;
+    return Promise.resolve(nodes);
   }
 
   function setStemMuted(url, muted) {
     for (var i = 0; i < Audio._currentStems.length; i++) {
-      if (Audio._currentStems[i].url === url) {
-        Audio._currentStems[i].node.gain.gain.value = muted ? 0 : 0.8;
-        Audio._currentStems[i].muted = muted;
+      var s = Audio._currentStems[i];
+      if (s.url === url) {
+        s.muted = muted;
+        s.el.volume = muted ? 0 : EXCERPT_BASE_VOLUME;
+        if (!muted && s.el.paused) {
+          var p = s.el.play();
+          if (p && p.catch) p.catch(function () {});
+        }
       }
     }
   }
@@ -407,7 +409,11 @@
      ================================================================ */
   function stop() {
     if (Audio._current && Audio._current.src) {
+      /* Web Audio buffer source */
       try { Audio._current.src.stop(); } catch (e) {}
+    } else if (Audio._current && Audio._current.pause) {
+      /* native <audio> element */
+      try { Audio._current.pause(); Audio._current.currentTime = 0; } catch (e) {}
     }
     Audio._current = null;
     Audio._currentType = null;
@@ -419,6 +425,8 @@
       var s = Audio._currentStems[i];
       if (s && s.node && s.node.src) {
         try { s.node.src.stop(); } catch (e) {}
+      } else if (s && s.el && s.el.pause) {
+        try { s.el.pause(); s.el.currentTime = 0; } catch (e) {}
       }
     }
     Audio._currentStems = [];

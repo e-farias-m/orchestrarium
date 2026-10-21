@@ -99,8 +99,8 @@
     var lang = getLang();
     var out = ['<div class="welcome">'];
     out.push('<div class="welcome-lang-toggle" role="group" aria-label="', t('Language'), '">');
-    out.push('<button class="lang-pill', lang === 'en' ? ' active' : '', '" data-action="set-lang" data-lang="en">', t('English'), '</button>');
-    out.push('<button class="lang-pill', lang === 'pt' ? ' active' : '', '" data-action="set-lang" data-lang="pt">', t('Português (Brasil)'), '</button>');
+    out.push('<button class="lang-pill', lang === 'en' ? ' active' : '', '" data-action="set-lang" data-lang="en" aria-pressed="', lang === 'en' ? 'true' : 'false', '">', t('English'), '</button>');
+    out.push('<button class="lang-pill', lang === 'pt' ? ' active' : '', '" data-action="set-lang" data-lang="pt" aria-pressed="', lang === 'pt' ? 'true' : 'false', '">', t('Português (Brasil)'), '</button>');
     out.push('</div>');
     out.push('<img class="welcome-logo" src="icon.svg" alt="">');
     out.push('<h1 class="welcome-title">', t('Welcome!'), '</h1>');

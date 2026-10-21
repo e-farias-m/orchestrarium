@@ -49,11 +49,18 @@ function makeElement(tag) {
 function makeSandbox(store) {
   store = store || {};
   var elements = { app: makeElement('div') };
+  /* Fake native <audio> element so excerpt/stem playback can be exercised. */
+  function FakeAudio(url) {
+    this.src = url; this.volume = 1; this.paused = true; this.currentTime = 0;
+  }
+  FakeAudio.prototype.play = function () { this.paused = false; return Promise.resolve(); };
+  FakeAudio.prototype.pause = function () { this.paused = true; };
   var sandbox = {
     console: console, Math: Math, Date: Date, JSON: JSON, Promise: Promise,
     Object: Object, Array: Array, Set: Set, String: String, Number: Number,
     setTimeout: function (fn) { return 0; }, clearTimeout: function () {},
     requestAnimationFrame: function (fn) { fn(); },
+    Audio: FakeAudio,
     localStorage: {
       getItem: function (k) { return store[k] === undefined ? null : store[k]; },
       setItem: function (k, v) { store[k] = String(v); },
@@ -196,6 +203,26 @@ ok(screenHtml().indexOf('Créditos') !== -1, 'PT renders credits title');
 APP.screen = 'detail'; APP.instrument = 'violin'; S.render();
 ok(screenHtml().indexOf('Violino') !== -1, 'PT detail shows Violino');
 ok(screenHtml().indexOf('Você sabia?') !== -1, 'PT detail shows Você sabia?');
+
+/* --- Orchestra mixer playback (native <audio> path) --- */
+var stems = S.INSTRUMENTS.ORCHESTRA_STEMS.map(function (s) { return s.url; });
+var mutedUrl = S.INSTRUMENTS.ORCHESTRA_STEMS[1].url;
+S.Audio.playStems(stems, (function () { var m = {}; m[mutedUrl] = true; return m; })());
+ok(S.Audio._currentStems.length === stems.length, 'mixer creates one element per stem');
+var mutedStem = S.Audio._currentStems.filter(function (s) { return s.url === mutedUrl; })[0];
+ok(mutedStem.el.paused === true, 'muted stem does not autoplay');
+ok(mutedStem.el.volume === 0, 'muted stem volume is 0');
+var liveStem = S.Audio._currentStems.filter(function (s) { return s.url !== mutedUrl; })[0];
+ok(liveStem.el.paused === false, 'unmuted stems autoplay');
+/* Simulate elapsed playback, then unmute: element must resync, not restart. */
+S.Audio._currentStems.forEach(function (s) { if (!s.muted) s.el.currentTime = 15; });
+S.Audio.setStemMuted(mutedUrl, false);
+ok(mutedStem.el.paused === false, 'unmute resumes playback');
+ok(mutedStem.el.currentTime === 15, 'unmute resyncs to the running stems');
+ok(mutedStem.el.volume > 0, 'unmute restores volume');
+S.Audio.stopAll();
+ok(S.Audio._currentStems.length === 0, 'stopAll clears the stem set');
+ok(mutedStem.el.paused === true, 'stopAll pauses the element');
 
 console.log('\n  passed: ' + passed + '   failed: ' + failed);
 if (failed) { console.log('  FAILED\n'); process.exit(1); }

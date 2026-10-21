@@ -390,6 +390,15 @@
     return Promise.resolve(nodes);
   }
 
+  /* Current playback position across the stem set (from any live element). */
+  function stemClock() {
+    for (var i = 0; i < Audio._currentStems.length; i++) {
+      var el = Audio._currentStems[i].el;
+      if (el && !el.paused && el.currentTime > 0) return el.currentTime;
+    }
+    return 0;
+  }
+
   function setStemMuted(url, muted) {
     for (var i = 0; i < Audio._currentStems.length; i++) {
       var s = Audio._currentStems[i];
@@ -397,6 +406,12 @@
         s.muted = muted;
         s.el.volume = muted ? 0 : EXCERPT_BASE_VOLUME;
         if (!muted && s.el.paused) {
+          /* Re-sync a previously-muted element to the running stems
+             before it starts, so unmuting doesn't jump to the top. */
+          var t = stemClock();
+          if (t > 0) {
+            try { s.el.currentTime = t; } catch (e) {}
+          }
           var p = s.el.play();
           if (p && p.catch) p.catch(function () {});
         }

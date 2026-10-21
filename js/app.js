@@ -276,6 +276,37 @@
     out.push('</div>');
     out.push('</div>');
 
+    /* Orchestra mixer — interactive synchronized multitrack */
+    var isStemInstrument = INSTRUMENTS.ORCHESTRA_STEMS.some(function (s) { return s.id === inst.id; });
+    if (isStemInstrument) {
+      out.push('<div class="detail-section orchestra-mixer">');
+      out.push('<div class="detail-section-title">', t('Play with the orchestra'), '</div>');
+      out.push('<p class="mixer-hint">', t('Mute or unmute each part and hear how they fit together.'), '</p>');
+      out.push('<div class="audio-btn-row">');
+      out.push(
+        '<button class="audio-btn primary" data-action="mixer-play">',
+        '<span class="audio-btn-icon">▶️</span><span>', t('Play all'), '</span></button>'
+      );
+      out.push(
+        '<button class="audio-btn secondary" data-action="mixer-stop">',
+        '<span class="audio-btn-icon">⏹️</span><span>', t('Stop'), '</span></button>'
+      );
+      out.push('</div>');
+      out.push('<ul class="mixer-tracks">');
+      INSTRUMENTS.ORCHESTRA_STEMS.forEach(function (s) {
+        var muted = !!APP.selectedStems[s.url];
+        out.push(
+          '<li class="mixer-track', muted ? ' muted' : '', '">',
+          '<button class="mixer-toggle" data-action="mixer-toggle" data-stem-url="', s.url, '" aria-pressed="', muted ? 'true' : 'false', '">',
+          '<span class="mixer-dot"></span>',
+          '<span>', esc(localized(s, 'label')), '</span>',
+          '</button></li>'
+        );
+      });
+      out.push('</ul>');
+      out.push('</div>');
+    }
+
     /* Parts of the instrument (hotspot list — Tier 1 & mobile fallback) */
     var hotspots = INSTRUMENTS.hotspotsForTier(inst.id, APP.tier);
     if (hotspots.length) {
@@ -498,7 +529,8 @@
       '<a href="https://github.com/sgossner/VSCO-2-CE" target="_blank" rel="noopener">VSCO 2: Community Edition</a> (CC0 1.0).</p>');
     out.push('<p style="margin-top:var(--sp-3)">',
       'Orchestral excerpt: W. A. Mozart, <em>Le nozze di Figaro</em> Overture — ',
-      'via <a href="https://archive.org/" target="_blank" rel="noopener">Musopen</a> (public domain / CC0).</p>');
+      'Musopen Symphony Orchestra, via <a href="https://archive.org/" target="_blank" rel="noopener">Musopen</a> (CC0). ',
+      'Per-section multitrack stems extracted from the original session recording.</p>');
     out.push('<p style="margin-top:var(--sp-3)">',
       'Celesta and voice use built-in synthesized tones.</p>');
     out.push('<p style="margin-top:var(--sp-3)">',
@@ -646,6 +678,23 @@
         Audio.playStem(target.getAttribute('data-id'));
         markPlaying(target);
         break;
+
+      case 'mixer-play': {
+        var stems = INSTRUMENTS.ORCHESTRA_STEMS.map(function (s) { return s.url; });
+        Audio.playStems(stems, APP.selectedStems);
+        break;
+      }
+      case 'mixer-stop':
+        Audio.stop();
+        break;
+      case 'mixer-toggle': {
+        var url = target.getAttribute('data-stem-url');
+        var nowMuted = !APP.selectedStems[url];
+        if (nowMuted) APP.selectedStems[url] = true; else delete APP.selectedStems[url];
+        Audio.setStemMuted(url, nowMuted);
+        render();
+        break;
+      }
 
       case 'hotspot':
         openHotspot(target.getAttribute('data-hotspot'));

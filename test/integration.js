@@ -163,6 +163,8 @@ ok(dhtml.indexOf('hotspot-layer') !== -1, 'detail has hotspot overlay');
 ok(dhtml.indexOf('detail-diagram') !== -1, 'detail has diagram mount');
 ok(dhtml.indexOf('Hear it!') !== -1, 'detail has Hear it!');
 ok(dhtml.indexOf('Did you know?') !== -1, 'detail has Did you know?');
+ok(dhtml.indexOf('orchestra-mixer') !== -1, 'detail has orchestra mixer for stem instruments');
+ok(dhtml.indexOf('mixer-play') !== -1, 'mixer has play control');
 ok(S.Games.Progress.isExplored('violin'), 'opening detail marks explored');
 
 click('nav-games');

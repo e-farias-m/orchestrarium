@@ -17,6 +17,25 @@
 
   var FAMILY_ORDER = ['strings', 'woodwinds', 'brass', 'percussion', 'other'];
 
+  /* --- Figaro Overture multitrack sections (synchronized stems) ---
+     Live Musopen Symphony performance, CC0. Each entry is one microphone
+     section isolated from the same take, aligned at t=0. */
+  var ORCHESTRA_STEMS = [
+    { id: 'violin',       label: 'Violins',      labelPt: 'Violinos',      url: 'audio/excerpts/figaro-violin.mp3' },
+    { id: 'viola',        label: 'Violas',       labelPt: 'Violas',        url: 'audio/excerpts/figaro-viola.mp3' },
+    { id: 'cello',        label: 'Cellos',       labelPt: 'Violoncelos',   url: 'audio/excerpts/figaro-cello.mp3' },
+    { id: 'double-bass',  label: 'Double Basses', labelPt: 'Contrabaixos', url: 'audio/excerpts/figaro-double-bass.mp3' },
+    { id: 'flute',        label: 'Flutes',       labelPt: 'Flautas',       url: 'audio/excerpts/figaro-flute.mp3' },
+    { id: 'oboe',         label: 'Oboes',        labelPt: 'Oboés',         url: 'audio/excerpts/figaro-oboe.mp3' },
+    { id: 'clarinet',     label: 'Clarinets',    labelPt: 'Clarinetes',    url: 'audio/excerpts/figaro-clarinet.mp3' },
+    { id: 'bassoon',      label: 'Bassoons',     labelPt: 'Fagotes',       url: 'audio/excerpts/figaro-bassoon.mp3' },
+    { id: 'french-horn',  label: 'Horns',        labelPt: 'Trompas',       url: 'audio/excerpts/figaro-french-horn.mp3' },
+    { id: 'trumpet',      label: 'Trumpets',     labelPt: 'Trompetes',     url: 'audio/excerpts/figaro-trumpet.mp3' },
+    { id: 'timpani',      label: 'Timpani',      labelPt: 'Tímpanos',      url: 'audio/excerpts/figaro-timpani.mp3' },
+    { id: 'percussion',   label: 'Percussion',   labelPt: 'Percussão',     url: 'audio/excerpts/figaro-percussion.mp3' },
+  ];
+  var ORCHESTRA_PREMIX = 'audio/excerpts/figaro-premix.mp3';
+
   /* --- Full roster (27 instruments) --- */
   var ROSTER = [
     /* Tier 1 (12) */
@@ -174,7 +193,7 @@
       },
 
       excerpt: {
-        stem: 'audio/excerpts/figaro-violin-1.mp3',
+        stem: 'audio/excerpts/figaro-violin.mp3',
         stemLabel: 'Violin I',
         stemLabelPt: 'Violino I',
         premix: 'audio/excerpts/figaro-premix.mp3',
@@ -353,6 +372,14 @@
         en: 'In "Peter and the Wolf," the cat is played by the clarinet — sneaking and prowling!',
         pt: 'Em "Peter e o Lobo", o gato é tocado pelo clarinete — espreitando e de emboscada!',
       },
+      excerpt: {
+        stem: 'audio/excerpts/figaro-clarinet.mp3',
+        stemLabel: 'Clarinet',
+        stemLabelPt: 'Clarinete',
+        premix: 'audio/excerpts/figaro-premix.mp3',
+        description: 'Hear the clarinet in Mozart\'s Marriage of Figaro Overture.',
+        descriptionPt: 'Ouça o clarinete na Abertura de Le Nozze di Figaro, de Mozart.',
+      },
       related: ['bass-clarinet', 'flute', 'oboe'],
     },
 
@@ -466,6 +493,14 @@
         en: 'In "Peter and the Wolf," the wolf is played by three French horns — can you hear why that sounds scary?',
         pt: 'Em "Peter e o Lobo", o lobo é tocado por três trompas — consegue ouvir por que isso soa assustador?',
       },
+      excerpt: {
+        stem: 'audio/excerpts/figaro-french-horn.mp3',
+        stemLabel: 'French Horn',
+        stemLabelPt: 'Trompa',
+        premix: 'audio/excerpts/figaro-premix.mp3',
+        description: 'Hear the French horn in Mozart\'s Marriage of Figaro Overture.',
+        descriptionPt: 'Ouça a trompa na Abertura de Le Nozze di Figaro, de Mozart.',
+      },
       related: ['trumpet', 'trombone', 'tuba'],
     },
 
@@ -510,6 +545,14 @@
       didYouKnow: {
         en: 'A timpani player can change the pitch while a note is still ringing, using the pedals — like magic!',
         pt: 'Um timpaneiro pode mudar a altura enquanto a nota ainda está soando, usando os pedais — como mágica!',
+      },
+      excerpt: {
+        stem: 'audio/excerpts/figaro-timpani.mp3',
+        stemLabel: 'Timpani',
+        stemLabelPt: 'Tímpanos',
+        premix: 'audio/excerpts/figaro-premix.mp3',
+        description: 'Hear the timpani in Mozart\'s Marriage of Figaro Overture.',
+        descriptionPt: 'Ouça os tímpanos na Abertura de Le Nozze di Figaro, de Mozart.',
       },
       related: ['bass-drum', 'snare-drum', 'tam-tam'],
     },
@@ -1005,14 +1048,6 @@
         en: 'The saxophone is one of the youngest instruments — it is less than 200 years old, while the violin is over 400!',
         pt: 'O saxofone é um dos instrumentos mais jovens — tem menos de 200 anos, enquanto o violino tem mais de 400!',
       },
-      excerpt: {
-        stem: 'audio/excerpts/figaro-alto-sax.mp3',
-        stemLabel: 'Alto Saxophone',
-        stemLabelPt: 'Saxofone Alto',
-        premix: 'audio/excerpts/figaro-premix.mp3',
-        description: 'Hear the saxophone in Mozart\'s Marriage of Figaro Overture.',
-        descriptionPt: 'Ouça o saxofone na Abertura de Le Nozze di Figaro, de Mozart.',
-      },
       related: ['clarinet', 'bass-clarinet', 'oboe'],
     },
 
@@ -1059,7 +1094,7 @@
         pt: 'O piccolo é tão forte e penetrante que pode ser ouvido sobre uma orquestra inteira de 100 músicos!',
       },
       excerpt: {
-        stem: 'audio/excerpts/figaro-piccolo.mp3',
+        stem: 'audio/excerpts/figaro-flute.mp3',
         stemLabel: 'Piccolo',
         stemLabelPt: 'Piccolo',
         premix: 'audio/excerpts/figaro-premix.mp3',
@@ -1117,7 +1152,7 @@
         pt: 'O nome do corno inglês em francês, "cor anglais", é pronunciado com sotaque inglês por algumas orquestras só por diversão!',
       },
       excerpt: {
-        stem: 'audio/excerpts/figaro-english-horn.mp3',
+        stem: 'audio/excerpts/figaro-oboe.mp3',
         stemLabel: 'English Horn',
         stemLabelPt: 'Corno Inglês',
         premix: 'audio/excerpts/figaro-premix.mp3',
@@ -1175,7 +1210,7 @@
         pt: 'Em "Peter e o Lobo", o clarinete baixo não é usado — mas em muitas trilhas de filmes ele toca o tema do vilão sorrateiro!',
       },
       excerpt: {
-        stem: 'audio/excerpts/figaro-bass-clarinet.mp3',
+        stem: 'audio/excerpts/figaro-clarinet.mp3',
         stemLabel: 'Bass Clarinet',
         stemLabelPt: 'Clarinete Baixo',
         premix: 'audio/excerpts/figaro-premix.mp3',
@@ -1233,7 +1268,7 @@
         pt: 'Os trombones podem deslizar tão suavemente que os compositores os usam para soar como um bocejo gigante ou um pássaro em voo rasante!',
       },
       excerpt: {
-        stem: 'audio/excerpts/figaro-trombone.mp3',
+        stem: 'audio/excerpts/figaro-trumpet.mp3',
         stemLabel: 'Trombone',
         stemLabelPt: 'Trombone',
         premix: 'audio/excerpts/figaro-premix.mp3',
@@ -1291,7 +1326,7 @@
         pt: 'Em "Peter e o Lobo", o avô de Peter às vezes é tocado pela tuba em outras versões — grave e rabugento!',
       },
       excerpt: {
-        stem: 'audio/excerpts/figaro-tuba.mp3',
+        stem: 'audio/excerpts/figaro-double-bass.mp3',
         stemLabel: 'Tuba',
         stemLabelPt: 'Tuba',
         premix: 'audio/excerpts/figaro-premix.mp3',
@@ -1556,6 +1591,8 @@
     FAMILY_ORDER: FAMILY_ORDER,
     ROSTER: ROSTER,
     BY_ID: BY_ID,
+    ORCHESTRA_STEMS: ORCHESTRA_STEMS,
+    ORCHESTRA_PREMIX: ORCHESTRA_PREMIX,
 
     get: function (id) { return BY_ID[id] || null; },
 

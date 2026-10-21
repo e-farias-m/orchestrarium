@@ -160,6 +160,23 @@ detailed.forEach(function (r) {
   });
 });
 
+section('Orchestra multitrack stems');
+ok(INSTRUMENTS.ORCHESTRA_STEMS.length >= 8,
+  'has a multitrack stem list (' + INSTRUMENTS.ORCHESTRA_STEMS.length + ')');
+ok(!!INSTRUMENTS.ORCHESTRA_PREMIX, 'has a premix reference');
+INSTRUMENTS.ORCHESTRA_STEMS.forEach(function (s) {
+  ok(!!s.id && !!s.label && !!s.labelPt && !!s.url, 'stem ' + s.id + ' is complete');
+  ok(s.url.indexOf('audio/excerpts/figaro-') === 0, 'stem ' + s.id + ' url shape');
+});
+detailed.forEach(function (r) {
+  var inst = INSTRUMENTS.get(r.id);
+  if (inst.excerpt) {
+    ok(inst.excerpt.stem && inst.excerpt.stem.indexOf('audio/excerpts/') === 0,
+      r.id + ' excerpt stem path');
+    ok(!!inst.excerpt.stemLabel && !!inst.excerpt.stemLabelPt, r.id + ' excerpt bilingual label');
+  }
+});
+
 /* ================================================================ */
 section('Games logic (isolated game module)');
 var gsb = loadSandbox();

@@ -96,6 +96,8 @@ console.log('\nIntegration smoke test');
 ok(APP.screen === 'welcome', 'boots to welcome with no saved tier');
 ok(screenHtml().indexOf('tier-picker') !== -1, 'welcome renders tier picker');
 ok(screenHtml().indexOf('Little Kids') !== -1, 'welcome shows tier names');
+ok(screenHtml().indexOf('welcome-lang-toggle') !== -1, 'welcome has inline language toggle');
+ok(screenHtml().indexOf('data-action="set-lang"') !== -1, 'welcome language toggle is wired');
 
 /* Simulate picking tier 2 */
 S.render.__simulate = true;

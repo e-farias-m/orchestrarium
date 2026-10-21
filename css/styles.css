@@ -185,6 +185,7 @@ ul, ol { list-style: none; }
 
 /* --- Welcome Screen --- */
 .welcome {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -192,6 +193,31 @@ ul, ol { list-style: none; }
   min-height: 100dvh;
   text-align: center;
   padding: var(--sp-5);
+}
+.welcome-lang-toggle {
+  position: absolute;
+  top: var(--sp-4);
+  right: var(--sp-4);
+  display: flex;
+  gap: var(--sp-1);
+  padding: 3px;
+  border-radius: var(--r-pill);
+  background: var(--bg-glass);
+  border: 1.5px solid rgba(45, 55, 72, 0.12);
+  backdrop-filter: blur(8px);
+}
+.lang-pill {
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+}
+.lang-pill:hover { color: var(--text); }
+.lang-pill.active {
+  background: var(--accent);
+  color: #fff;
 }
 .welcome-logo {
   width: 96px; height: 96px;

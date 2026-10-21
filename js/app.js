@@ -96,7 +96,12 @@
      SCREEN: WELCOME / TIER PICKER
      ================================================================ */
   function renderWelcome() {
+    var lang = getLang();
     var out = ['<div class="welcome">'];
+    out.push('<div class="welcome-lang-toggle" role="group" aria-label="', t('Language'), '">');
+    out.push('<button class="lang-pill', lang === 'en' ? ' active' : '', '" data-action="set-lang" data-lang="en">', t('English'), '</button>');
+    out.push('<button class="lang-pill', lang === 'pt' ? ' active' : '', '" data-action="set-lang" data-lang="pt">', t('Português (Brasil)'), '</button>');
+    out.push('</div>');
     out.push('<img class="welcome-logo" src="icon.svg" alt="">');
     out.push('<h1 class="welcome-title">', t('Welcome!'), '</h1>');
     out.push('<p class="welcome-sub">', t('Choose your level to get started.'), '</p>');

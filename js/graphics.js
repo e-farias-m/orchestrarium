@@ -134,6 +134,45 @@
      ================================================================ */
 
   /**
+   * Compute label anchor positions (percent of the diagram box). Labels
+   * sit beside their dot on the nearest side; labels on the same side are
+   * pushed apart vertically so they never overlap.
+   * @returns {Object} map of hotspot id -> { x, y, side }
+   */
+  function labelLayout(hotspots) {
+    var MIN_GAP = 7.5;
+    var layout = {};
+    var sides = { left: [], right: [] };
+    for (var i = 0; i < hotspots.length; i++) {
+      var h = hotspots[i];
+      sides[h.x < 50 ? 'left' : 'right'].push(h);
+    }
+    Object.keys(sides).forEach(function (side) {
+      var list = sides[side].slice().sort(function (a, b) { return a.y - b.y; });
+      var prev = -Infinity;
+      for (var k = 0; k < list.length; k++) {
+        var y = Math.max(list[k].y, prev + MIN_GAP);
+        prev = y;
+        layout[list[k].id] = {
+          x: side === 'left' ? list[k].x - 2 : list[k].x + 2,
+          y: y,
+          side: side,
+        };
+      }
+      if (prev > 97 && list.length) {
+        var shift = prev - 97;
+        for (var m = list.length - 1; m >= 0; m--) {
+          layout[list[m].id].y -= shift;
+          if (m > 0 && layout[list[m - 1].id].y > layout[list[m].id].y - MIN_GAP) {
+            layout[list[m - 1].id].y = layout[list[m].id].y - MIN_GAP;
+          }
+        }
+      }
+    });
+    return layout;
+  }
+
+  /**
    * Render the hotspot overlay for an instrument.
    * @param {string} instrumentId
    * @param {number} tier - current grade band
@@ -175,19 +214,18 @@
     out.push('</div>');
 
     /* Labels positioned at edges (DK style) */
+    var layout = labelLayout(hotspots);
     out.push('<div id="hotspot-labels">');
     for (var j = 0; j < hotspots.length; j++) {
       var hs = hotspots[j];
       var labelText = isLangPt ? hs.labelPt : hs.label;
-      /* Place label: left side if x < 50, right side if x >= 50 */
-      var side = hs.x < 50 ? 'left' : 'right';
-      var labelX = hs.x < 50 ? hs.x - 2 : hs.x + 2;
-      var labelAlign = hs.x < 50 ? 'right' : 'left';
+      var pos = layout[hs.id];
+      var labelAlign = pos.side === 'left' ? 'right' : 'left';
       out.push(
         '<span class="hotspot-label" id="hl-' + hs.id + '"',
         ' data-hotspot="' + hs.id + '"',
-        ' style="left:' + labelX + '%;top:' + hs.y + '%;transform:translate(' +
-        (hs.x < 50 ? '-100%' : '0') + ',-50%);text-align:' + labelAlign + '">',
+        ' style="left:' + pos.x + '%;top:' + pos.y + '%;transform:translate(' +
+        (pos.side === 'left' ? '-100%' : '0') + ',-50%);text-align:' + labelAlign + '">',
         labelText,
         '</span>'
       );
@@ -215,19 +253,16 @@
     leaderSvg.innerHTML = '';
 
     /* We draw lines in the leader-svg coordinate space (0-100) */
+    var layout = labelLayout(hotspots);
     var lines = [];
     for (var i = 0; i < hotspots.length; i++) {
       var h = hotspots[i];
       var label = document.getElementById('hl-' + h.id);
       if (!label) continue;
 
-      /* Label position relative to the layer (percentage) */
-      var labelX = h.x < 50 ? h.x - 2 : h.x + 2;
-      var labelY = h.y;
-
-      /* Line from hotspot dot to label edge */
+      var pos = layout[h.id];
       lines.push(
-        '<line x1="' + h.x + '" y1="' + h.y + '" x2="' + labelX + '" y2="' + labelY + '"',
+        '<line x1="' + h.x + '" y1="' + h.y + '" x2="' + pos.x + '" y2="' + pos.y + '"',
         ' vector-effect="non-scaling-stroke"/>'
       );
     }

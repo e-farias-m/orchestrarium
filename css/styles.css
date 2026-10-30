@@ -73,6 +73,22 @@
   --dg-open: #ffffff;
   --dg-accent: var(--accent);
 
+  /* Diagram material tones (realistic instrument bodies) */
+  --dg-wood: #c8965a;          /* warm spruce/maple top */
+  --dg-wood-dark: #9a6b34;     /* shaded spruce */
+  --dg-wood-edge: #6f4a1f;     /* outline of wooden bodies */
+  --dg-padauk: #8a4b32;        /* reddish bow/fittings wood */
+  --dg-brass: #d9a441;         /* polished brass */
+  --dg-brass-dark: #a3721f;    /* brass shadow */
+  --dg-brass-edge: #7a5215;    /* brass outline */
+  --dg-silver: #cfd6de;        /* nickel/silver keys, flute */
+  --dg-silver-dark: #9aa4b0;
+  --dg-silver-edge: #6b7480;
+  --dg-ebonite: #24272e;       /* clarinet/sax black body */
+  --dg-ebonite-edge: #111318;
+  --dg-skin: #e8c9a8;          /* drumhead / timpani head */
+  --dg-skin-edge: #b99a76;
+
   /* Layout */
   --app-max: 960px;
   --topbar-h: 56px;
@@ -330,12 +346,15 @@ ul, ol { list-style: none; }
   font-size: 28px;
   flex-shrink: 0;
 }
-.nav-card-body { flex: 1; }
+.nav-card-body { flex: 1; min-width: 0; text-align: left; }
 .nav-card-title {
+  display: block;
   font-weight: 700;
   font-size: var(--fs-body);
 }
 .nav-card-desc {
+  display: block;
+  margin-top: 2px;
   font-size: var(--fs-small);
   color: var(--text-muted);
 }

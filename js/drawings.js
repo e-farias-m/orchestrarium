@@ -245,16 +245,21 @@
   function harp() {
     var f = fills('harp');
     var inner = [];
-    inner.push(R(30, 386, 180, 12, 4, f.wood, WOOD_E, 1));
-    inner.push(P('M92 150 C58 230 60 330 78 384 L170 384 C190 300 200 200 176 36 Z', f.wood, WOOD_E, 1.2));
-    for (var i = 0; i < 14; i++) {
-      var t = 0.12 + i * 0.06;
-      var px = 176 - 84 * t, py = 36 + 114 * t;
-      var bx = 92 + i * 5.5;
-      inner.push(L(bx, 376, px, py, SIL, 0.9));
+    inner.push(R(38, 392, 170, 14, 6, f.wood, WOOD_E, 1));
+    inner.push(node('path', { d: 'M60 392 C30 330 36 220 74 170 C86 152 96 140 104 126 L120 392 Z',
+      fill: f.wood, stroke: WOOD_E, 'stroke-width': 1.4 }));
+    inner.push(L(120, 392, 104, 126, WOOD_E, 2));
+    var N = 18;
+    for (var i = 0; i < N; i++) {
+      var s = i / (N - 1);
+      var ax = 120 - 16 * s, ay = 392 - 266 * s;
+      var r = 0.15 + 0.8 * s;
+      var bx = 104 + 92 * r, by = 126 - 86 * r;
+      inner.push(L(ax, ay, bx, by, SIL, 0.8));
     }
-    inner.push(T('M176 36 C232 120 228 270 170 384', 14, PAD, '#5e2e1b'));
-    inner.push(T('M176 36 L92 150', 10, PAD, '#5e2e1b'));
+    inner.push(T('M180 398 C218 320 222 180 196 40', 16, PAD, '#5e2e1b'));
+    inner.push(T('M196 40 L104 126', 10, PAD, '#5e2e1b'));
+    inner.push(C(196, 34, 6, PAD, '#5e2e1b', 1.2));
     return wrap('0 0 240 420', 'Harp diagram', f, inner.join(''));
   }
 

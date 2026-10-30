@@ -252,7 +252,7 @@ ok(Graphics.instrumentIcon('violin', 64).indexOf('<svg') === 0, 'violin icon ren
 ok(Graphics.instrumentIcon('unknown-xyz', 64).indexOf('<svg') === 0, 'unknown id → family icon');
 ok(Graphics.familyIcon('brass', 40).indexOf('<svg') === 0, 'family icon renders');
 var drawingIds = Object.keys(gsb.ORCH_DRAWINGS);
-ok(drawingIds.length === 14, 'all 14 hand-drawn instruments registered (' + drawingIds.length + ')');
+ok(drawingIds.length === 27, 'all 27 instruments have a hand-drawn illustration (' + drawingIds.length + ')');
 drawingIds.forEach(function (id) {
   var s = gsb.ORCH_DRAWINGS[id]();
   ok(s.indexOf('<svg') === 0 && s.indexOf('</svg>') === s.length - 6, id + ' drawing is a single well-formed svg');

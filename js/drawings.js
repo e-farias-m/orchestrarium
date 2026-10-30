@@ -36,6 +36,7 @@
     return {
       u: u,
       wood: 'url(#' + u + '-wood)',
+      wood2: 'url(#' + u + '-wood2)',
       brass: 'url(#' + u + '-brass)',
       silver: 'url(#' + u + '-silver)',
       ebon: 'url(#' + u + '-ebon)',
@@ -53,6 +54,7 @@
     }
     return '<defs>' +
       lin('wood', '#dcb27a', WOOD, WOOD_D) +
+      lin('wood2', '#b98152', '#8a5a2c', '#4e2f14') +
       lin('brass', '#f3d68c', BRASS, BRASS_D) +
       lin('silver', '#f7f9fb', SIL, SIL_D) +
       lin('ebon', '#4a505a', EBON, EBON_E) +
@@ -101,23 +103,34 @@
         'stroke-width': Math.max(1, w * 0.18), 'stroke-linecap': 'round',
         transform: 'translate(' + (-w * 0.22).toFixed(2) + ' 0)' });
   }
+  /* Two-tone bell or cone: body fill, dark outline. */
+  function bellCone(d, fill) {
+    return P(d, fill, BRASS_E, 1.4);
+  }
+  /* Bow stick with frog, tilted by angle around (cx, cy). */
+  function bow(f, x, y0, len, angle, cx, cy) {
+    return '<g transform="rotate(' + angle + ' ' + cx + ' ' + cy + ')">' +
+      R(x, y0, 4.5, len, 2, f.pad, WOOD_E, 0.8) +
+      L(x + 2.2, y0 + 4, x + 2.2, y0 + len - 30, INK_DIM, 0.9) +
+      R(x - 2, y0 + len - 28, 8.5, 18, 2, EBON) +
+      '</g>';
+  }
 
   /* ================================================================
-     STRINGS — violin and viola share one construction
+     STRINGS
      ================================================================ */
-  function fiddle(id, aria, scaleX, scaleY) {
+  /* Violin and viola share the fiddle construction. */
+  function fiddle(id, aria, sx, sy, bodyFill) {
     var f = fills(id);
     var body = 'M70 150 Q45 155 42 185 Q40 210 55 225 Q65 235 62 250 Q60 265 55 275 ' +
       'Q35 290 38 320 Q42 350 70 355 L130 355 Q158 350 162 320 Q165 290 145 275 ' +
       'Q140 265 138 250 Q135 235 145 225 Q160 210 158 185 Q155 155 130 150 Z';
-    var g = 'translate(100 252) scale(' + scaleX + ' ' + scaleY + ') translate(-100 -252)';
+    var pivot = 'translate(100 252) scale(' + sx + ' ' + sy + ') translate(-100 -252)';
     var inner = [];
 
-    /* Neck and fingerboard */
     inner.push(R(92, 58, 16, 96, 0, f.wood, WOOD_E, 1));
     inner.push(R(94, 58, 12, 96, 1, f.ebon));
 
-    /* Scroll, pegbox and pegs */
     inner.push(P('M100 30 C92 30 88 24 90 16 C92 8 104 6 108 14 C111 20 106 24 102 21 C99 18 102 14 105 16',
       null, WOOD_E, 3));
     inner.push(R(90, 28, 20, 30, 3, f.wood, WOOD_E, 1));
@@ -126,50 +139,150 @@
     inner.push(E(84, 50, 6, 3, f.ebon));
     inner.push(E(116, 54, 6, 3, f.ebon));
 
-    /* Body */
-    inner.push(node('path', { d: body, fill: f.wood, stroke: WOOD_E, 'stroke-width': 1.4,
-      transform: g }));
+    inner.push(node('path', { d: body, fill: bodyFill, stroke: WOOD_E, 'stroke-width': 1.4, transform: pivot }));
     inner.push(node('path', { d: body, fill: 'none', stroke: INK_DIM, 'stroke-width': 0.8,
       'stroke-dasharray': '3 2', 'stroke-opacity': 0.6,
-      transform: 'translate(100 252) scale(' + (scaleX * 0.93) + ' ' + (scaleY * 0.93) + ') translate(-100 -252)' }));
+      transform: 'translate(100 252) scale(' + (sx * 0.93) + ' ' + (sy * 0.93) + ') translate(-100 -252)' }));
 
-    /* f-holes */
     inner.push(P('M78 222 Q74 240 78 258 Q82 266 78 274', null, EBON, 2.4));
     inner.push(P('M122 222 Q126 240 122 258 Q118 266 122 274', null, EBON, 2.4));
     inner.push(C(78, 220, 2, EBON));
     inner.push(C(122, 220, 2, EBON));
 
-    /* Chin rest, bridge, tailpiece */
     inner.push(E(78, 338, 14, 8, EBON, null, 0, 'rotate(-4 78 338)'));
-    inner.push(P('M88 240 L112 240 L110 252 L90 252 Z', SKIN, SKIN_E, 0.9));
+    inner.push(P('M88 240 L112 240 L110 252 L90 252 Z', f.skin, SKIN_E, 0.9));
     inner.push(P('M92 330 L108 330 L104 356 L96 356 Z', EBON));
 
-    /* Strings over the body, from the nut to the tailpiece */
     inner.push('<g stroke="' + SIL_E + '" stroke-width="0.9" fill="none">' +
       L(95, 160, 95, 330, SIL_E, 0.9) + L(98.5, 158, 98.5, 330, SIL_E, 0.9) +
       L(101.5, 158, 101.5, 330, SIL_E, 0.9) + L(105, 160, 105, 330, SIL_E, 0.9) + '</g>');
 
-    /* Endpin */
     inner.push(L(100, 356, 100, 366, SIL_E, 3));
     inner.push(C(100, 368, 3.5, EBON));
 
-    /* Bow, tilted to the right */
-    inner.push('<g transform="rotate(-8 165 200)">' +
-      R(162, 80, 4, 260, 2, f.pad, WOOD_E, 0.8) +
-      L(164, 85, 164, 330, INK_DIM, 1) +
-      P('M162 80 Q164 72 166 80', EBON) +
-      R(160, 320, 8, 18, 2, EBON) +
-      '</g>');
-
+    inner.push(bow(f, 162, 80, 260, -8, 165, 200));
     return wrap('0 0 200 420', aria, f, inner.join(''));
   }
 
-  function violin() { return fiddle('violin', 'Violin diagram', 1, 1); }
-  function viola() { return fiddle('viola', 'Viola diagram', 1.1, 1.08); }
+  function violin() { return fiddle('violin', 'Violin diagram', 1, 1, fills('violin').wood); }
+
+  /* Viola: deeper C-bouts, larger body, darker spruce/maple tone. */
+  function viola() {
+    return fiddle('viola', 'Viola diagram', 1.12, 1.1, fills('viola').wood2);
+  }
+
+  function cello() {
+    var f = fills('cello');
+    var inner = [];
+    var body = 'M100 176 C72 176 60 190 58 212 C57 226 66 236 72 248 C64 262 60 270 62 282 ' +
+      'C62 296 40 306 40 334 C40 364 58 388 100 388 C142 388 160 364 160 334 ' +
+      'C160 306 138 296 138 282 C140 270 136 262 128 248 C134 236 143 226 142 212 ' +
+      'C140 190 128 176 100 176 Z';
+
+    inner.push(P('M100 22 C92 22 88 16 90 10 C92 2 104 0 108 8 C111 14 106 18 102 15 C99 12 102 8 105 10',
+      null, WOOD_E, 3));
+    inner.push(R(90, 20, 20, 38, 3, f.wood, WOOD_E, 1));
+    inner.push(E(84, 30, 6, 3, f.ebon));
+    inner.push(E(116, 38, 6, 3, f.ebon));
+    inner.push(E(84, 46, 6, 3, f.ebon));
+    inner.push(E(116, 54, 6, 3, f.ebon));
+    inner.push(R(92, 58, 16, 118, 0, f.wood, WOOD_E, 1));
+    inner.push(R(94, 58, 12, 128, 1, f.ebon));
+
+    inner.push(node('path', { d: body, fill: f.wood, stroke: WOOD_E, 'stroke-width': 1.6 }));
+    inner.push(node('path', { d: body, fill: 'none', stroke: INK_DIM, 'stroke-width': 0.8,
+      'stroke-dasharray': '3 2', 'stroke-opacity': 0.6,
+      transform: 'translate(100 282) scale(0.93) translate(-100 -282)' }));
+
+    inner.push(P('M80 240 Q76 258 80 276 Q84 284 80 292', null, EBON, 2.6));
+    inner.push(P('M120 240 Q124 258 120 276 Q116 284 120 292', null, EBON, 2.6));
+    inner.push(P('M86 262 L114 262 L112 276 L88 276 Z', f.skin, SKIN_E, 0.9));
+    inner.push(P('M96 340 L104 340 L102 386 L98 386 Z', EBON));
+
+    inner.push('<g stroke="' + SIL_E + '" stroke-width="0.9" fill="none">' +
+      L(95, 186, 95, 340, SIL_E, 0.9) + L(98.5, 186, 98.5, 340, SIL_E, 0.9) +
+      L(101.5, 186, 101.5, 340, SIL_E, 0.9) + L(105, 186, 105, 340, SIL_E, 0.9) + '</g>');
+
+    inner.push(L(100, 388, 100, 408, SIL_E, 3));
+    inner.push(C(100, 410, 3.5, EBON));
+
+    inner.push(bow(f, 166, 30, 320, -6, 170, 200));
+    return wrap('0 0 200 420', 'Cello diagram', f, inner.join(''));
+  }
+
+  function doubleBass() {
+    var f = fills('double-bass');
+    var inner = [];
+    var body = 'M100 196 C78 196 70 206 68 222 C67 234 74 242 78 252 C70 262 62 272 62 290 ' +
+      'C62 304 46 316 46 344 C46 380 68 404 100 404 C132 404 154 380 154 344 ' +
+      'C154 316 138 304 138 290 C138 272 130 262 122 252 C126 242 133 234 132 222 ' +
+      'C130 206 122 196 100 196 Z';
+
+    inner.push(P('M100 18 C92 18 88 12 90 6 C92 0 104 0 108 8 C111 14 106 18 102 15', null, WOOD_E, 3));
+    inner.push(R(88, 14, 24, 36, 3, f.wood, WOOD_E, 1));
+    inner.push(E(82, 24, 5, 3, f.ebon));
+    inner.push(E(118, 30, 5, 3, f.ebon));
+    inner.push(E(82, 40, 5, 3, f.ebon));
+    inner.push(E(118, 46, 5, 3, f.ebon));
+    inner.push(R(93, 50, 14, 140, 0, f.wood, WOOD_E, 1));
+    inner.push(R(95, 50, 10, 160, 1, f.ebon));
+
+    inner.push(node('path', { d: body, fill: f.wood, stroke: WOOD_E, 'stroke-width': 1.6 }));
+    inner.push(P('M80 290 Q76 310 80 330 Q84 340 80 350', null, EBON, 2.6));
+    inner.push(P('M120 290 Q124 310 120 330 Q116 340 120 350', null, EBON, 2.6));
+    inner.push(P('M86 300 L114 300 L112 314 L88 314 Z', f.skin, SKIN_E, 0.9));
+    inner.push(P('M94 350 L106 350 L104 390 L96 390 Z', EBON));
+
+    inner.push('<g stroke="' + SIL_E + '" stroke-width="0.9" fill="none">' +
+      L(95, 210, 95, 350, SIL_E, 0.9) + L(98.5, 210, 98.5, 350, SIL_E, 0.9) +
+      L(101.5, 210, 101.5, 350, SIL_E, 0.9) + L(105, 210, 105, 350, SIL_E, 0.9) + '</g>');
+
+    inner.push(L(100, 404, 100, 416, SIL_E, 3));
+    inner.push(bow(f, 166, 70, 330, -3, 168, 200));
+    return wrap('0 0 200 420', 'Double bass diagram', f, inner.join(''));
+  }
+
+  function harp() {
+    var f = fills('harp');
+    var inner = [];
+    inner.push(R(30, 386, 180, 12, 4, f.wood, WOOD_E, 1));
+    inner.push(P('M92 150 C58 230 60 330 78 384 L170 384 C190 300 200 200 176 36 Z', f.wood, WOOD_E, 1.2));
+    for (var i = 0; i < 14; i++) {
+      var t = 0.12 + i * 0.06;
+      var px = 176 - 84 * t, py = 36 + 114 * t;
+      var bx = 92 + i * 5.5;
+      inner.push(L(bx, 376, px, py, SIL, 0.9));
+    }
+    inner.push(T('M176 36 C232 120 228 270 170 384', 14, PAD, '#5e2e1b'));
+    inner.push(T('M176 36 L92 150', 10, PAD, '#5e2e1b'));
+    return wrap('0 0 240 420', 'Harp diagram', f, inner.join(''));
+  }
 
   /* ================================================================
      WOODWIND
      ================================================================ */
+  function flute() {
+    var f = fills('flute');
+    var inner = [];
+    inner.push(T('M60 100 L392 100', 13, f.silver, SIL_E));
+    inner.push(R(138, 93, 6, 14, 2, f.silver, SIL_E, 0.8));
+    inner.push(R(60, 94, 8, 12, 3, f.silver, SIL_E, 1));
+    inner.push(R(384, 94, 10, 12, 3, f.silver, SIL_E, 1));
+    inner.push(E(76, 100, 9, 6, 'none', SIL_E, 1.2));
+    inner.push(E(76, 100, 6, 4, EBON));
+    for (var i = 0; i < 11; i++) {
+      var x = 160 + i * 17;
+      inner.push(L(x, 96, x, 102, SIL_E, 1.2));
+      inner.push(E(x, 92, 4.5, 3.5, f.silver, SIL_E, 0.9));
+    }
+    for (var j = 0; j < 7; j++) {
+      var y = 108 + 0;
+      var x2 = 170 + j * 24;
+      inner.push(E(x2, y, 4, 3, f.silver, SIL_E, 0.9));
+    }
+    return wrap('0 0 420 200', 'Flute diagram', f, inner.join(''));
+  }
+
   function piccolo() {
     var f = fills('piccolo');
     var inner = [];
@@ -187,6 +300,23 @@
     inner.push(R(64, 92, 8, 16, 3, f.silver, SIL_E, 1));
     inner.push(R(384, 92, 10, 16, 3, f.silver, SIL_E, 1));
     return wrap('0 0 420 200', 'Piccolo diagram', f, inner.join(''));
+  }
+
+  function oboe() {
+    var f = fills('oboe');
+    var inner = [];
+    inner.push(R(96, 4, 8, 22, 3, SKIN, SKIN_E, 1));
+    inner.push(T('M100 24 L100 150', 12, PAD, '#4a2616'));
+    inner.push(R(94, 150, 12, 6, 1, f.silver, SIL_E, 0.8));
+    inner.push(T('M100 156 L100 300', 14, PAD, '#4a2616'));
+    inner.push(P('M92 300 L108 300 C112 326 116 352 118 370 L82 370 C84 352 88 326 92 300 Z', f.wood, '#4a2616', 1.2));
+    inner.push(R(80, 368, 40, 6, 2, f.silver, SIL_E, 0.8));
+    for (var i = 0; i < 6; i++) {
+      var y = 160 + i * 18;
+      inner.push(L(104, y, 110, y, SIL_E, 1));
+      inner.push(C(110, y, 3.8, f.silver, SIL_E, 0.9));
+    }
+    return wrap('0 0 200 420', 'Oboe diagram', f, inner.join(''));
   }
 
   function englishHorn() {
@@ -208,58 +338,211 @@
     return wrap('0 0 200 420', 'English horn diagram', f, inner.join(''));
   }
 
+  function clarinet() {
+    var f = fills('clarinet');
+    var inner = [];
+    inner.push(P('M80 22 L100 34 L98 42 L78 30 Z', f.ebon, EBON_E, 1));
+    inner.push(L(90, 27, 94, 35, SIL, 2.5));
+    inner.push(R(74, 38, 10, 6, 2, SKIN, SKIN_E, 0.8, 'rotate(-30 79 41)'));
+    inner.push(T('M104 42 L104 330', 16, EBON, EBON_E));
+    for (var i = 0; i < 8; i++) {
+      var y = 80 + i * 30;
+      inner.push(L(112, y, 118, y, SIL_E, 1.2));
+      inner.push(C(118, y, 4.5, f.silver, SIL_E, 1));
+    }
+    inner.push(R(96, 326, 16, 6, 1, f.silver, SIL_E, 0.8));
+    inner.push(P('M97 332 L111 332 C116 352 128 372 128 392 L80 392 C80 372 92 352 97 332 Z', f.ebon, EBON_E, 1.2));
+    return wrap('0 0 200 420', 'Clarinet diagram', f, inner.join(''));
+  }
+
   function bassClarinet() {
     var f = fills('bass-clarinet');
     var inner = [];
     inner.push(P('M62 20 L88 34 L86 42 L60 28 Z', f.ebon, EBON_E, 1));
     inner.push(L(76, 28, 80, 35, SIL, 2.5));
-    inner.push(T('M84 38 Q98 60 100 92', 9, SIL, SIL_E));
-    inner.push(T('M100 92 L104 334', 18, EBON, EBON_E));
+    inner.push(T('M84 38 Q98 60 100 92', 9, f.silver, SIL_E));
+    inner.push(T('M100 92 L100 330', 18, EBON, EBON_E));
     for (var i = 0; i < 6; i++) {
       var y = 118 + i * 28;
       inner.push(L(108, y, 116, y, SIL_E, 1.2));
       inner.push(C(116, y, 4.5, f.silver, SIL_E, 1));
     }
-    inner.push(R(96, 326, 16, 5, 1, f.silver, SIL_E, 0.8));
-    inner.push(P('M110 330 L126 330 C134 352 138 378 136 402 L108 402 C108 378 110 352 110 330 Z',
-      f.ebon, EBON_E, 1.2));
+    inner.push(R(92, 326, 16, 5, 1, f.silver, SIL_E, 0.8));
+    inner.push(T('M100 330 Q100 362 124 362 Q140 362 140 340', 12, f.brass, BRASS_E));
+    inner.push(P('M118 282 Q122 320 134 340 L146 340 Q158 320 162 282 Z', f.brass, BRASS_E, 1.2));
+    inner.push(E(140, 282, 22, 8, BRASS_E));
+    inner.push(E(140, 282, 18, 6, BRASS_D));
     return wrap('0 0 200 420', 'Bass clarinet diagram', f, inner.join(''));
+  }
+
+  function bassoon() {
+    var f = fills('bassoon');
+    var inner = [];
+    inner.push(R(62, 20, 10, 14, 3, SKIN, SKIN_E, 1, 'rotate(-20 67 27)'));
+    inner.push(T('M70 26 Q96 40 100 74', 6, f.silver, SIL_E));
+    inner.push(T('M100 74 L100 330', 14, PAD, '#4a2616'));
+    inner.push(R(94, 150, 12, 5, 1, f.silver, SIL_E, 0.8));
+    inner.push(R(94, 260, 12, 5, 1, f.silver, SIL_E, 0.8));
+    for (var i = 0; i < 8; i++) {
+      var y = 100 + i * 26;
+      inner.push(L(106, y, 112, y, SIL_E, 1.2));
+      inner.push(C(112, y, 3.8, f.silver, SIL_E, 0.9));
+    }
+    inner.push(T('M100 330 Q100 362 118 368', 14, PAD, '#4a2616'));
+    inner.push(P('M110 364 L140 364 C146 378 146 392 140 400 L110 400 C108 388 108 376 110 364 Z', f.wood, '#4a2616', 1.2));
+    return wrap('0 0 200 420', 'Bassoon diagram', f, inner.join(''));
+  }
+
+  function altoSax() {
+    var f = fills('alto-sax');
+    var inner = [];
+    inner.push(P('M84 16 L100 28 L96 34 L80 22 Z', f.ebon, EBON_E, 1));
+    inner.push(T('M92 32 Q100 36 102 52', 8, f.brass, BRASS_E));
+    inner.push(T('M102 52 L102 296', 22, f.brass, BRASS_E));
+    inner.push(T('M102 296 Q102 330 126 332', 22, f.brass, BRASS_E));
+    inner.push(T('M126 332 Q146 326 150 296', 16, f.brass, BRASS_E));
+    inner.push(E(154, 280, 22, 10, f.brass, BRASS_E, 2));
+    inner.push(E(154, 280, 16, 6, BRASS_D));
+    for (var i = 0; i < 6; i++) {
+      var y = 90 + i * 30;
+      inner.push(C(116, y, 4, f.silver, SIL_E, 1));
+    }
+    return wrap('0 0 200 420', 'Alto saxophone diagram', f, inner.join(''));
   }
 
   /* ================================================================
      BRASS
      ================================================================ */
+  function trumpet() {
+    var f = fills('trumpet');
+    var inner = [];
+    inner.push(T('M64 100 L150 100', 9, f.brass, BRASS_E));
+    inner.push(E(56, 100, 6, 9, f.silver, SIL_E, 1));
+    [172, 192, 212].forEach(function (x) {
+      inner.push(R(x - 5, 46, 10, 56, 3, f.silver, SIL_E, 1));
+      inner.push(C(x, 44, 6, f.brass, BRASS_E, 1));
+    });
+    inner.push(T('M150 100 L330 100', 12, f.brass, BRASS_E));
+    inner.push(T('M190 100 L190 128 Q190 148 212 148 L238 148 Q258 148 258 128 L258 100', 9, f.brass, BRASS_E));
+    inner.push(T('M330 100 L350 100', 12, f.brass, BRASS_E));
+    inner.push(P('M350 100 C358 96 368 72 376 46 L376 154 C368 128 358 104 350 100 Z', f.brass, BRASS_E, 1.5));
+    inner.push(E(376, 100, 8, 54, f.brass, BRASS_E, 2.5));
+    inner.push(E(376, 100, 4, 46, BRASS_D));
+    return wrap('0 0 420 200', 'Trumpet diagram', f, inner.join(''));
+  }
+
+  function frenchHorn() {
+    var f = fills('french-horn');
+    var inner = [];
+    inner.push(C(140, 170, 78, 'none', BRASS_E, 18));
+    inner.push(C(140, 170, 78, 'none', BRASS, 13));
+    inner.push(C(140, 170, 50, 'none', BRASS_E, 14));
+    inner.push(C(140, 170, 50, 'none', BRASS_D, 9));
+    inner.push(T('M56 72 L110 128', 8, f.brass, BRASS_E));
+    inner.push(P('M44 66 L58 64 L62 76 L48 80 Z', f.silver, SIL_E, 1));
+    for (var k = 0; k < 3; k++) {
+      inner.push(R(114 + k * 9, 104, 7, 34, 2, f.silver, SIL_E, 0.8));
+      inner.push(C(117.5 + k * 9, 102, 4.5, f.brass, BRASS_E, 1));
+    }
+    inner.push(T('M190 170 C214 150 220 120 220 96', 14, f.brass, BRASS_E));
+    inner.push(E(230, 70, 46, 24, f.brass, BRASS_E, 2.5));
+    inner.push(E(230, 70, 38, 18, BRASS_D));
+    return wrap('0 0 300 300', 'French horn diagram', f, inner.join(''));
+  }
+
   function tuba() {
     var f = fills('tuba');
     var inner = [];
-    inner.push(C(140, 200, 88, 'none', BRASS_E, 20));
-    inner.push(C(140, 200, 88, 'none', BRASS, 15));
-    inner.push(C(140, 200, 64, 'none', BRASS_E, 16));
-    inner.push(C(140, 200, 64, 'none', BRASS_D, 11));
-    inner.push(node('path', { d: 'M70 180 A88 88 0 0 1 120 116', fill: 'none', stroke: WHITE,
+    inner.push(E(120, 240, 80, 100, 'none', BRASS_E, 20));
+    inner.push(E(120, 240, 80, 100, 'none', BRASS, 15));
+    inner.push(E(120, 240, 52, 70, 'none', BRASS_E, 14));
+    inner.push(E(120, 240, 52, 70, 'none', BRASS_D, 9));
+    inner.push(node('path', { d: 'M52 210 A80 100 0 0 1 90 146', fill: 'none', stroke: WHITE,
       'stroke-opacity': 0.4, 'stroke-width': 3, 'stroke-linecap': 'round' }));
-    inner.push(T('M134 50 Q138 74 136 98', 7, BRASS, BRASS_E));
-    inner.push(P('M116 36 L134 46 L132 52 L114 42 Z', f.silver, SIL_E, 1));
-    [134, 150, 166].forEach(function (x) {
-      inner.push(R(x - 4, 100, 8, 40, 3, f.silver, SIL_E, 1));
-      inner.push(C(x, 98, 6, f.brass, BRASS_E, 1));
+    inner.push(T('M74 118 L110 128', 8, f.brass, BRASS_E));
+    inner.push(P('M60 112 L74 110 L76 122 L62 124 Z', f.silver, SIL_E, 1));
+    [110, 126, 142].forEach(function (x) {
+      inner.push(R(x - 4, 116, 8, 36, 3, f.silver, SIL_E, 1));
+      inner.push(C(x, 114, 6, f.brass, BRASS_E, 1));
     });
-    inner.push(T('M166 128 C204 110 216 72 216 46', 16, BRASS, BRASS_E));
-    inner.push(E(216, 40, 28, 11, f.brass, BRASS_E, 2));
-    inner.push(E(216, 40, 20, 7, BRASS_D));
-    return wrap('0 0 300 320', 'Tuba diagram', f, inner.join(''));
+    inner.push(T('M142 112 C170 96 186 66 186 40', 16, f.brass, BRASS_E));
+    inner.push(E(186, 36, 40, 13, f.brass, BRASS_E, 2));
+    inner.push(E(186, 36, 30, 9, BRASS_D));
+    return wrap('0 0 260 380', 'Tuba diagram', f, inner.join(''));
+  }
+
+  function trombone() {
+    var f = fills('trombone');
+    var inner = [];
+    inner.push(P('M70 92 L84 100 L70 108 Z', f.silver, SIL_E, 1));
+    inner.push(E(66, 100, 6, 10, f.silver, SIL_E, 1));
+    inner.push(T('M80 100 L300 100', 12, f.brass, BRASS_E));
+    inner.push(T('M104 108 L300 108', 8, f.silver, SIL_E));
+    inner.push(T('M120 104 Q120 140 180 140 Q240 140 240 104', 9, f.brass, BRASS_E));
+    inner.push(T('M300 100 L330 100', 12, f.brass, BRASS_E));
+    inner.push(P('M330 100 C344 96 356 80 366 60 L372 40 L372 160 L366 140 C356 120 344 104 330 100 Z', f.brass, BRASS_E, 1.5));
+    inner.push(E(372, 100, 8, 60, f.brass, BRASS_E, 2.5));
+    inner.push(E(372, 100, 4, 52, BRASS_D));
+    return wrap('0 0 420 200', 'Trombone diagram', f, inner.join(''));
   }
 
   /* ================================================================
      PERCUSSION
      ================================================================ */
+  function timpani() {
+    var f = fills('timpani');
+    var inner = [];
+    inner.push(L(104, 236, 84, 266, SIL_E, 3));
+    inner.push(R(68, 264, 44, 8, 3, f.brass, BRASS_E, 1));
+    inner.push(R(96, 236, 48, 6, 3, EBON, EBON_E, 1));
+    inner.push(P('M24 64 C24 150 60 214 120 232 C180 214 216 150 216 64 Z', f.brass, BRASS_E, 1.5));
+    inner.push(E(120, 64, 100, 24, 'none', BRASS_E, 6));
+    inner.push(E(120, 64, 92, 20, f.skin, SKIN_E, 1));
+    [44, 80, 120, 160, 196].forEach(function (x) {
+      inner.push(C(x, 80, 4, f.brass, BRASS_E, 1));
+    });
+    return wrap('0 0 240 300', 'Timpani diagram', f, inner.join(''));
+  }
+
+  function snareDrum() {
+    var f = fills('snare-drum');
+    var inner = [];
+    inner.push(R(50, 62, 200, 44, 0, f.wood, WOOD_E, 1.2));
+    inner.push(E(150, 106, 100, 22, '#d8c2a4', SKIN_E, 1.2));
+    for (var i = 0; i < 9; i++) {
+      var x = 72 + i * 19;
+      inner.push(L(x, 108, x, 116, SIL, 0.9));
+    }
+    inner.push(E(150, 62, 100, 22, f.skin, SKIN_E, 1));
+    inner.push(E(150, 62, 104, 25, 'none', BRASS, 6));
+    inner.push(P('M46 106 A104 25 0 0 0 254 106', null, BRASS_E, 6));
+    inner.push(C(80, 84, 4, BRASS, BRASS_E, 1));
+    inner.push(C(150, 84, 4, BRASS, BRASS_E, 1));
+    inner.push(C(220, 84, 4, BRASS, BRASS_E, 1));
+    return wrap('0 0 300 150', 'Snare drum diagram', f, inner.join(''));
+  }
+
+  function bassDrum() {
+    var f = fills('bass-drum');
+    var inner = [];
+    inner.push(C(150, 150, 128, f.wood, WOOD_E, 1.5));
+    inner.push(C(150, 150, 118, 'none', BRASS, 8));
+    inner.push(C(150, 150, 108, f.skin, SKIN_E, 1.2));
+    inner.push(C(150, 150, 44, 'none', ACC, 4));
+    inner.push(C(150, 150, 22, ACC));
+    [[150, 28], [272, 150], [150, 272], [28, 150]].forEach(function (p) {
+      inner.push(C(p[0], p[1], 4, BRASS, BRASS_E, 1));
+    });
+    return wrap('0 0 300 300', 'Bass drum diagram', f, inner.join(''));
+  }
+
   function triangle() {
     var f = fills('triangle');
     var inner = [];
     inner.push(L(150, 8, 150, 36, INK_DIM, 1.5));
     inner.push(C(150, 46, 9, 'none', SIL_E, 3.5));
-    inner.push(T('M150 62 L62 236 L238 236 Z', 7, SIL, SIL_E));
-    inner.push(T('M76 206 L100 262', 5, SIL, SIL_E));
+    inner.push(T('M150 62 L62 236 L238 236 Z', 7, f.silver, SIL_E));
+    inner.push(T('M76 206 L100 262', 5, f.silver, SIL_E));
     inner.push(C(76, 206, 6, EBON, EBON_E, 1));
     inner.push(R(94, 254, 14, 30, 6, EBON, EBON_E, 1, 'rotate(-20 101 269)'));
     return wrap('0 0 300 300', 'Triangle diagram', f, inner.join(''));
@@ -281,7 +564,7 @@
       inner.push(node('line', { x1: x - 3, y1: 126 - h / 2 + 4, x2: x - 3, y2: 126 + h / 2 - 4,
         stroke: WHITE, 'stroke-opacity': 0.5, 'stroke-width': 1.4, 'stroke-linecap': 'round' }));
     }
-    inner.push(T('M30 236 L88 190', 6, WOOD, WOOD_E));
+    inner.push(T('M30 236 L88 190', 6, f.wood, WOOD_E));
     inner.push(C(92, 184, 9, ACC, '#8a3a1a', 1));
     return wrap('0 0 360 260', 'Glockenspiel diagram', f, inner.join(''));
   }
@@ -300,52 +583,9 @@
       var sharp = [1, 3, 6, 8, 10].indexOf(j % 12) >= 0;
       inner.push(R(bx, 46, 22, 40, 3, sharp ? f.pad : f.wood, WOOD_E, 1));
     }
-    inner.push(T('M60 240 L100 178', 6, WOOD, WOOD_E));
+    inner.push(T('M60 240 L100 178', 6, f.wood, WOOD_E));
     inner.push(C(106, 172, 10, ACC, '#8a3a1a', 1));
     return wrap('0 0 420 250', 'Marimba diagram', f, inner.join(''));
-  }
-
-  function celesta() {
-    var f = fills('celesta');
-    var inner = [];
-    inner.push(R(36, 60, 288, 146, 6, f.wood, WOOD_E, 1.4));
-    inner.push(R(46, 68, 268, 36, 3, EBON));
-    for (var i = 0; i < 12; i++) {
-      var x = 58 + i * 21;
-      inner.push(R(x, 76, 12, 22, 1, f.silver, SIL_E, 0.8));
-      inner.push(R(x + 2, 110, 8, 14, 2, SKIN, SKIN_E, 0.8));
-    }
-    inner.push(R(44, 170, 272, 36, 2, KEY, KEY_E, 0.8));
-    for (var k = 0; k < 15; k++) {
-      inner.push(R(44 + k * 18, 170, 18, 36, 1, KEY, KEY_E, 0.8));
-    }
-    for (var b = 0; b < 14; b++) {
-      if ([0, 1, 3, 4, 5].indexOf(b % 7) >= 0) {
-        inner.push(R(44 + (b + 1) * 18 - 5, 170, 10, 22, 1, f.ebon, EBON_E, 0.6));
-      }
-    }
-    inner.push(R(54, 206, 12, 26, 2, WOOD_E));
-    inner.push(R(294, 206, 12, 26, 2, WOOD_E));
-    return wrap('0 0 360 260', 'Celesta diagram', f, inner.join(''));
-  }
-
-  function snareDrum() {
-    var f = fills('snare-drum');
-    var inner = [];
-    inner.push(R(50, 60, 200, 140, 0, f.silver));
-    inner.push(E(150, 200, 100, 22, f.silver, SIL_E, 1.2));
-    inner.push(P('M70 206 Q150 226 230 206', null, SIL_E, 1));
-    for (var i = 0; i < 9; i++) {
-      var x = 74 + i * 18;
-      inner.push(L(x, 204, x, 212, SIL_E, 0.7));
-    }
-    inner.push(C(80, 150, 5, BRASS, BRASS_E, 1));
-    inner.push(C(150, 150, 5, BRASS, BRASS_E, 1));
-    inner.push(C(220, 150, 5, BRASS, BRASS_E, 1));
-    inner.push(E(150, 60, 100, 22, SKIN, SKIN_E, 1));
-    inner.push(E(150, 60, 104, 25, 'none', BRASS, 6));
-    inner.push(P('M46 200 A104 25 0 0 0 254 200', null, BRASS_E, 6));
-    return wrap('0 0 300 260', 'Snare drum diagram', f, inner.join(''));
   }
 
   function tamTam() {
@@ -361,13 +601,13 @@
     inner.push(C(150, 170, 60, 'none', BRASS_D, 1.5));
     inner.push(C(150, 170, 26, BRASS_D, BRASS_E, 1.5));
     inner.push(R(60, 326, 180, 14, 4, EBON, EBON_E, 1));
-    inner.push(T('M50 320 L70 274', 6, WOOD, WOOD_E));
+    inner.push(T('M50 320 L70 274', 6, f.wood, WOOD_E));
     inner.push(C(74, 268, 9, ACC, '#8a3a1a', 1));
     return wrap('0 0 300 380', 'Tam-tam diagram', f, inner.join(''));
   }
 
   /* ================================================================
-     KEYBOARD
+     KEYBOARD AND VOICE
      ================================================================ */
   function piano() {
     var f = fills('piano');
@@ -397,9 +637,30 @@
     return wrap('0 0 360 380', 'Piano diagram', f, inner.join(''));
   }
 
-  /* ================================================================
-     VOICE
-     ================================================================ */
+  function celesta() {
+    var f = fills('celesta');
+    var inner = [];
+    inner.push(R(36, 60, 288, 146, 6, f.wood, WOOD_E, 1.4));
+    inner.push(R(46, 68, 268, 36, 3, EBON));
+    for (var i = 0; i < 12; i++) {
+      var x = 58 + i * 21;
+      inner.push(R(x, 76, 12, 22, 1, f.silver, SIL_E, 0.8));
+      inner.push(R(x + 2, 110, 8, 14, 2, SKIN, SKIN_E, 0.8));
+    }
+    inner.push(R(44, 170, 272, 36, 2, KEY, KEY_E, 0.8));
+    for (var k = 0; k < 15; k++) {
+      inner.push(R(44 + k * 18, 170, 18, 36, 1, KEY, KEY_E, 0.8));
+    }
+    for (var b = 0; b < 14; b++) {
+      if ([0, 1, 3, 4, 5].indexOf(b % 7) >= 0) {
+        inner.push(R(44 + (b + 1) * 18 - 5, 170, 10, 22, 1, f.ebon, EBON_E, 0.6));
+      }
+    }
+    inner.push(R(54, 206, 12, 26, 2, WOOD_E));
+    inner.push(R(294, 206, 12, 26, 2, WOOD_E));
+    return wrap('0 0 360 260', 'Celesta diagram', f, inner.join(''));
+  }
+
   function voice() {
     var f = fills('voice');
     var inner = [];
@@ -425,17 +686,30 @@
   var DRAWINGS = {
     violin: violin,
     viola: viola,
+    cello: cello,
+    'double-bass': doubleBass,
+    flute: flute,
     piccolo: piccolo,
+    oboe: oboe,
     'english-horn': englishHorn,
+    clarinet: clarinet,
     'bass-clarinet': bassClarinet,
+    bassoon: bassoon,
+    'alto-sax': altoSax,
+    trumpet: trumpet,
+    'french-horn': frenchHorn,
+    trombone: trombone,
     tuba: tuba,
+    timpani: timpani,
+    'snare-drum': snareDrum,
+    'bass-drum': bassDrum,
     triangle: triangle,
     glockenspiel: glockenspiel,
     marimba: marimba,
-    celesta: celesta,
-    'snare-drum': snareDrum,
     'tam-tam': tamTam,
     piano: piano,
+    harp: harp,
+    celesta: celesta,
     voice: voice,
   };
 

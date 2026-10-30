@@ -468,6 +468,10 @@ ul, ol { list-style: none; }
   display: flex;
   justify-content: center;
   background: var(--bg-canvas);
+  background: linear-gradient(165deg,
+    color-mix(in srgb, var(--family-color, transparent) 26%, #fff) 0%,
+    color-mix(in srgb, var(--family-color, transparent) 8%, #fff) 100%),
+    var(--bg-canvas);
   min-height: 280px;
 }
 .detail-diagram {

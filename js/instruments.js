@@ -88,7 +88,7 @@
           tiers: [2, 3],
         },
         {
-          id: 'pegs', x: 34, y: 12,
+          id: 'pegs', x: 41, y: 10,
           label: 'Pegs', labelPt: 'Clavijas',
           desc: 'Four wooden pegs that hold and tune the strings. Turn one to make its string tighter or looser.',
           descPt: 'Quatro clavijas de madeira que seguram e afinam as cordas. Gire uma para deixar sua corda mais tensa ou mais frouxa.',
@@ -116,7 +116,7 @@
           tiers: [1, 2, 3],
         },
         {
-          id: 'bridge', x: 50, y: 52,
+          id: 'bridge', x: 50, y: 56,
           label: 'Bridge', labelPt: 'Ponte',
           desc: 'A small piece of wood that holds the strings above the body. It passes the strings\' vibrations down into the violin so it can sing.',
           descPt: 'Uma pequena peça de madeira que sustenta as cordas acima do corpo. Ela transmite as vibrações das cordas para dentro do violino para que ele possa cantar.',
@@ -151,7 +151,7 @@
           tiers: [3],
         },
         {
-          id: 'endpin', x: 50, y: 88,
+          id: 'endpin', x: 50, y: 86,
           label: 'Endpin', labelPt: 'Espigão',
           desc: 'A small button at the very bottom that holds the tailpiece in place.',
           descPt: 'Um pequeno botão na parte mais baixa que mantém o saltarelho no lugar.',
@@ -561,7 +561,7 @@
     'snare-drum': {
       synth: { type: 'percussion' },
       hotspots: [
-        { id: 'drumhead', x: 50, y: 12,
+        { id: 'drumhead', x: 50, y: 23,
           label: 'Drumhead', labelPt: 'Pele',
           desc: 'The top skin that the player strikes. The bottom head vibrates too!',
           descPt: 'A pele superior que o músico golpeita. A pele inferior também vibra!',
@@ -571,7 +571,7 @@
           desc: 'The cylindrical body, usually made of wood or metal.',
           descPt: 'O corpo cilíndrico, geralmente feito de madeira ou metal.',
           tiers: [2, 3] },
-        { id: 'rim', x: 50, y: 10,
+        { id: 'rim', x: 50, y: 13,
           label: 'Rim', labelPt: 'Aro',
           desc: 'The metal ring at the top. Players can hit the rim for a clicking sound!',
           descPt: 'O anel metálico no topo. Os músicos podem golpear o aro para produzir um som de estalo!',
@@ -733,7 +733,7 @@
     voice: {
       synth: { type: 'voice' },
       hotspots: [
-        { id: 'body', x: 50, y: 50,
+        { id: 'body', x: 55, y: 75,
           label: 'Your body', labelPt: 'Seu corpo',
           desc: 'Your voice box (larynx) contains tiny vocal cords that vibrate when you sing or speak.',
           descPt: 'Sua laringe contém pequenas cordas vocais que vibram quando você canta ou fala.',
@@ -1055,7 +1055,7 @@
     piccolo: {
       synth: { type: 'flute' },
       hotspots: [
-        { id: 'embouchure', x: 18, y: 15,
+        { id: 'embouchure', x: 24, y: 50,
           label: 'Embouchure hole', labelPt: 'Boca',
           desc: 'Like the flute, the player blows across a hole to make sound.',
           descPt: 'Como na flauta, o músico sopra sobre um furo para produzir som.',
@@ -1108,12 +1108,12 @@
     'english-horn': {
       synth: { type: 'woodwind' },
       hotspots: [
-        { id: 'reed', x: 30, y: 12,
+        { id: 'reed', x: 29, y: 10,
           label: 'Double reed', labelPt: 'Palheta dupla',
           desc: 'A double reed, just like the oboe, but a bit larger.',
           descPt: 'Uma palheta dupla, igual à do oboé, mas um pouco maior.',
           tiers: [1, 2, 3] },
-        { id: 'keys', x: 50, y: 45,
+        { id: 'keys', x: 54, y: 45,
           label: 'Keys', labelPt: 'Teclas',
           desc: 'A key system similar to the oboe\'s, sized for its longer body.',
           descPt: 'Um sistema de teclas semelhante ao do oboé, dimensionado para seu corpo mais longo.',
@@ -1123,7 +1123,7 @@
           desc: 'Longer than an oboe, giving it a lower, creamier sound.',
           descPt: 'Mais longo que o oboé, dando-lhe um som mais grave e aveludado.',
           tiers: [2, 3] },
-        { id: 'bell', x: 55, y: 88,
+        { id: 'bell', x: 58, y: 88,
           label: 'Bell', labelPt: 'Sino',
           desc: 'A rounded bell — the French called it "cor anglais," or "English horn," but nobody knows why!',
           descPt: 'Um sino arredondado — os franceses o chamaram de "cor anglais", ou "corno inglês", mas ninguém sabe por quê!',
@@ -1176,7 +1176,7 @@
           desc: 'A large key system covering the long, doubled-over tube.',
           descPt: 'Um grande sistema de teclas cobrindo o tubo longo e dobrado.',
           tiers: [1, 2, 3] },
-        { id: 'neck', x: 45, y: 22,
+        { id: 'neck', x: 49, y: 22,
           label: 'Neck', labelPt: 'Pescoço',
           desc: 'A curved metal neck bends down to the body.',
           descPt: 'Um pescoço metálico curvo desce até o corpo.',
@@ -1282,7 +1282,7 @@
     tuba: {
       synth: { type: 'brass' },
       hotspots: [
-        { id: 'mouthpiece', x: 45, y: 15,
+        { id: 'mouthpiece', x: 44, y: 15,
           label: 'Mouthpiece', labelPt: 'Bocal',
           desc: 'A very large, deep mouthpiece for the player to buzz into.',
           descPt: 'Um bocal muito grande e profundo no qual o músico vibra os lábios.',
@@ -1292,12 +1292,12 @@
           desc: 'Four valves change the length of the tubing to make lower or higher notes.',
           descPt: 'Quatro válvulas mudam o comprimento do tubo para produzir notas mais graves ou mais agudas.',
           tiers: [1, 2, 3] },
-        { id: 'bell', x: 65, y: 20,
+        { id: 'bell', x: 68, y: 28,
           label: 'Bell', labelPt: 'Sino',
           desc: 'The huge, upward-facing bell. It projects a deep, round sound.',
           descPt: 'O enorme sino voltado para cima. Ele projeta um som grave e arredondado.',
           tiers: [1, 2, 3] },
-        { id: 'body', x: 50, y: 55,
+        { id: 'body', x: 50, y: 88,
           label: 'Body', labelPt: 'Corpo',
           desc: 'About 5.5 meters of tubing coiled up — the biggest of all the brass instruments.',
           descPt: 'Cerca de 5,5 metros de tubo enrolados — o maior de todos os instrumentos de metais.',
@@ -1395,7 +1395,7 @@
           desc: 'The player strikes the bars with small hard mallets for a bright, bell-like sound.',
           descPt: 'O músico golpeia as barras com pequenas baquetas duras para produzir um som brilhante, como de sino.',
           tiers: [1, 2, 3] },
-        { id: 'frame', x: 50, y: 65,
+        { id: 'frame', x: 50, y: 73,
           label: 'Frame', labelPt: 'Estrutura',
           desc: 'A frame holds the bars in place, often inside a carrying case.',
           descPt: 'Uma estrutura mantém as barras no lugar, geralmente dentro de um estojo de transporte.',
@@ -1430,12 +1430,12 @@
     marimba: {
       synth: { type: 'percussion' },
       hotspots: [
-        { id: 'bars', x: 50, y: 40,
+        { id: 'bars', x: 52, y: 30,
           label: 'Bars', labelPt: 'Barras',
           desc: 'A large set of wooden bars, each tuned to a note. The bars are laid out like piano keys.',
           descPt: 'Um grande conjunto de barras de madeira, cada uma afinada numa nota. As barras são dispostas como teclas de piano.',
           tiers: [1, 2, 3] },
-        { id: 'resonators', x: 50, y: 65,
+        { id: 'resonators', x: 53, y: 62,
           label: 'Resonators', labelPt: 'Ressonadores',
           desc: 'Metal tubes hanging under each bar amplify and lengthen the sound.',
           descPt: 'Tubos de metal pendurados sob cada barra amplificam e prolongam o som.',
@@ -1485,7 +1485,7 @@
           desc: 'The player uses a soft, padded mallet for a deep, shimmering roar.',
           descPt: 'O músico usa uma baqueta macia e acolchoada para produzir um rugido profundo e cintilante.',
           tiers: [1, 2, 3] },
-        { id: 'stand', x: 50, y: 88,
+        { id: 'stand', x: 50, y: 86,
           label: 'Stand', labelPt: 'Suporte',
           desc: 'A frame hangs or holds the heavy disc so it can vibrate freely.',
           descPt: 'Uma armação pendura ou sustenta o disco pesado para que ele possa vibrar livremente.',

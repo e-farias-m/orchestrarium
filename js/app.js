@@ -242,7 +242,7 @@
     Games.Progress.markExplored(inst.id);
 
     var out = [];
-    out.push('<div class="detail-spread">');
+    out.push('<div class="detail-spread" style="--family-color:', familyColorVar(inst.family), '">');
 
     /* Hero: diagram + hotspots + labels */
     out.push('<div class="detail-hero">');

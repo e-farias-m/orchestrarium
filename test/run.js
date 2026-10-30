@@ -181,6 +181,7 @@ detailed.forEach(function (r) {
 section('Games logic (isolated game module)');
 var gsb = loadSandbox();
 /* Load graphics (stubbed for icons) + games into the same sandbox. */
+vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/drawings.js'), 'utf8'), gsb, { filename: 'js/drawings.js' });
 var gcode = fs.readFileSync(path.join(ROOT, 'js/graphics.js'), 'utf8');
 vm.runInContext(gcode, gsb, { filename: 'js/graphics.js' });
 var gamesCode = fs.readFileSync(path.join(ROOT, 'js/games.js'), 'utf8');
@@ -250,6 +251,13 @@ ok(Graphics.instrumentSVG('cello').indexOf('<svg') === 0, 'cello SVG renders');
 ok(Graphics.instrumentIcon('violin', 64).indexOf('<svg') === 0, 'violin icon renders');
 ok(Graphics.instrumentIcon('unknown-xyz', 64).indexOf('<svg') === 0, 'unknown id → family icon');
 ok(Graphics.familyIcon('brass', 40).indexOf('<svg') === 0, 'family icon renders');
+var drawingIds = Object.keys(gsb.ORCH_DRAWINGS);
+ok(drawingIds.length === 14, 'all 14 hand-drawn instruments registered (' + drawingIds.length + ')');
+drawingIds.forEach(function (id) {
+  var s = gsb.ORCH_DRAWINGS[id]();
+  ok(s.indexOf('<svg') === 0 && s.indexOf('</svg>') === s.length - 6, id + ' drawing is a single well-formed svg');
+  ok(/viewBox="0 0 \d+ \d+"/.test(s), id + ' drawing declares a viewBox');
+});
 var overlay = Graphics.hotspotOverlay('violin', 2);
 ok(overlay.indexOf('hotspot-layer') !== -1, 'hotspot overlay renders layer');
 ok(overlay.indexOf('data-action="hotspot"') !== -1, 'hotspot overlay has action buttons');

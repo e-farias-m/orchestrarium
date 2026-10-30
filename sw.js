@@ -1,4 +1,4 @@
-const CACHE = 'orchestrarium-v3';
+const CACHE = 'orchestrarium-v4';
 const PRECACHE = [
   '/',
   '/index.html',
@@ -7,6 +7,7 @@ const PRECACHE = [
   '/css/styles.css',
   '/js/i18n.js',
   '/js/instruments.js',
+  '/js/drawings.js',
   '/js/graphics.js',
   '/js/audio.js',
   '/js/games.js',

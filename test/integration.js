@@ -86,7 +86,7 @@ function makeSandbox(store) {
 }
 
 var ctx = makeSandbox({});
-var files = ['js/i18n.js', 'js/instruments.js', 'js/graphics.js', 'js/audio.js', 'js/games.js', 'js/app.js'];
+var files = ['js/i18n.js', 'js/instruments.js', 'js/drawings.js', 'js/graphics.js', 'js/audio.js', 'js/games.js', 'js/app.js'];
 files.forEach(function (f) {
   vm.runInContext(fs.readFileSync(path.join(ROOT, f), 'utf8'), ctx.sandbox, { filename: f });
 });

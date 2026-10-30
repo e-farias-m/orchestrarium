@@ -24,83 +24,6 @@
      Hotspot coordinates in instruments.js are % of this viewBox.
      ================================================================ */
 
-  /* --- Violin (reference) --- */
-  function violinSVG() {
-    return [
-      '<svg xmlns="', NS, '" viewBox="0 0 200 420" role="img" aria-label="Violin diagram">',
-      /* Strings (draw first, behind body) */
-      '<g stroke="', INK_DIM, '" stroke-width="1.2" fill="none" opacity="0.7">',
-      '<line x1="94" y1="160" x2="94" y2="340"/>',
-      '<line x1="98" y1="155" x2="98" y2="340"/>',
-      '<line x1="102" y1="155" x2="102" y2="340"/>',
-      '<line x1="106" y1="160" x2="106" y2="340"/>',
-      '</g>',
-      /* Bow (right side, diagonal) */
-      '<g transform="rotate(-8 165 200)">',
-      '<rect x="162" y="80" width="4" height="260" rx="2" fill="', HOUSING, '" stroke="', HOUSING_EDGE, '" stroke-width="0.8"/>',
-      '<line x1="164" y1="85" x2="164" y2="330" stroke="', INK_DIM, '" stroke-width="1" opacity="0.5"/>',
-      /* bow tip */
-      '<path d="M162 80 Q164 72 166 80" fill="', HOUSING_EDGE, '"/>',
-      /* bow frog */
-      '<rect x="160" y="320" width="8" height="18" rx="2" fill="', INK, '"/>',
-      '</g>',
-      /* Scroll */
-      '<path d="M92 22 Q88 10 100 8 Q112 10 108 22 Q106 30 100 28 Q96 26 98 22" fill="none" stroke="', INK, '" stroke-width="2.5" stroke-linecap="round"/>',
-      /* Pegbox + pegs */
-      '<rect x="90" y="28" width="20" height="28" rx="3" fill="', HOUSING, '" stroke="', HOUSING_EDGE, '" stroke-width="1"/>',
-      /* pegs (4 small ovals) */
-      '<ellipse cx="86" cy="36" rx="5" ry="3" fill="', INK, '"/>',
-      '<ellipse cx="114" cy="42" rx="5" ry="3" fill="', INK, '"/>',
-      '<ellipse cx="86" cy="48" rx="5" ry="3" fill="', INK, '"/>',
-      '<ellipse cx="114" cy="54" rx="5" ry="3" fill="', INK, '"/>',
-      /* Neck */
-      '<rect x="91" y="56" width="18" height="80" fill="', HOUSING, '" stroke="', HOUSING_EDGE, '" stroke-width="0.8"/>',
-      /* Fingerboard (dark strip on neck) */
-      '<rect x="93" y="56" width="14" height="90" rx="1" fill="', INK, '" opacity="0.85"/>',
-      /* Body — hourglass shape */
-      '<path d="',
-      /* left side of body */
-      'M70 150 ',
-      /* upper bout left */
-      'Q45 155 42 185 ',
-      'Q40 210 55 225 ',
-      /* C-bout left */
-      'Q65 235 62 250 ',
-      'Q60 265 55 275 ',
-      /* lower bout left */
-      'Q35 290 38 320 ',
-      'Q42 350 70 355 ',
-      /* bottom */
-      'L130 355 ',
-      /* lower bout right */
-      'Q158 350 162 320 ',
-      'Q165 290 145 275 ',
-      /* C-bout right */
-      'Q140 265 138 250 ',
-      'Q135 235 145 225 ',
-      /* upper bout right */
-      'Q160 210 158 185 ',
-      'Q155 155 130 150 ',
-      'Z" fill="', HOUSING, '" stroke="', HOUSING_EDGE, '" stroke-width="1.2"/>',
-      /* f-holes */
-      '<path d="M78 230 Q76 240 78 255 Q80 260 78 265" fill="none" stroke="', INK, '" stroke-width="2.5" stroke-linecap="round"/>',
-      '<circle cx="78" cy="232" r="2.5" fill="', INK, '"/>',
-      '<circle cx="78" cy="263" r="2.5" fill="', INK, '"/>',
-      '<path d="M122 230 Q124 240 122 255 Q120 260 122 265" fill="none" stroke="', INK, '" stroke-width="2.5" stroke-linecap="round"/>',
-      '<circle cx="122" cy="232" r="2.5" fill="', INK, '"/>',
-      '<circle cx="122" cy="263" r="2.5" fill="', INK, '"/>',
-      /* Bridge */
-      '<path d="M88 240 L112 240 L110 248 L90 248 Z" fill="', HOUSING_EDGE, '" stroke="', INK, '" stroke-width="0.8"/>',
-      /* Tailpiece */
-      '<path d="M92 330 L108 330 L105 355 L95 355 Z" fill="', INK, '" opacity="0.8"/>',
-      /* Chin rest (left side) */
-      '<ellipse cx="78" cy="338" rx="14" ry="8" fill="', INK, '" opacity="0.6"/>',
-      /* Endpin */
-      '<circle cx="100" cy="358" r="4" fill="', INK, '"/>',
-      '</svg>',
-    ].join('');
-  }
-
   /* --- Generic instrument silhouette (placeholder for Phase 2) --- */
   function genericSVG(family) {
     var bodyColor = {
@@ -122,7 +45,8 @@
 
   /* --- SVG for a specific instrument --- */
   function instrumentSVG(id) {
-    if (id === 'violin') return violinSVG();
+    var drawings = (typeof window !== 'undefined' && window.ORCH_DRAWINGS) || null;
+    if (drawings && drawings[id]) return drawings[id]();
     var inst = INSTRUMENTS.get(id);
     return genericSVG(inst ? inst.family : 'other');
   }
@@ -526,7 +450,6 @@
   /* --- Public API --- */
   var Graphics = {
     instrumentSVG: instrumentSVG,
-    violinSVG: violinSVG,
     hotspotOverlay: hotspotOverlay,
     drawLeaderLines: drawLeaderLines,
     hotspotInfoCard: hotspotInfoCard,

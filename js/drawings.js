@@ -174,39 +174,39 @@
   function cello() {
     var f = fills('cello');
     var inner = [];
-    var body = 'M100 176 C72 176 60 190 58 212 C57 226 66 236 72 248 C64 262 60 270 62 282 ' +
-      'C62 296 40 306 40 334 C40 364 58 388 100 388 C142 388 160 364 160 334 ' +
-      'C160 306 138 296 138 282 C140 270 136 262 128 248 C134 236 143 226 142 212 ' +
-      'C140 190 128 176 100 176 Z';
+    var body = 'M100 160 C80 160 64 168 58 186 C52 204 56 222 68 238 C78 250 78 262 74 274 ' +
+      'C70 286 36 298 34 326 C32 364 62 398 100 398 C138 398 168 364 166 326 ' +
+      'C164 298 130 286 126 274 C122 262 122 250 132 238 C144 222 148 204 142 186 ' +
+      'C136 168 120 160 100 160 Z';
 
-    inner.push(P('M100 22 C92 22 88 16 90 10 C92 2 104 0 108 8 C111 14 106 18 102 15 C99 12 102 8 105 10',
-      null, WOOD_E, 3));
-    inner.push(R(90, 20, 20, 38, 3, f.wood, WOOD_E, 1));
-    inner.push(E(84, 30, 6, 3, f.ebon));
-    inner.push(E(116, 38, 6, 3, f.ebon));
-    inner.push(E(84, 46, 6, 3, f.ebon));
-    inner.push(E(116, 54, 6, 3, f.ebon));
-    inner.push(R(92, 58, 16, 118, 0, f.wood, WOOD_E, 1));
-    inner.push(R(94, 58, 12, 128, 1, f.ebon));
+    inner.push(P('M100 24 C92 24 88 18 90 12 C92 4 104 2 108 10 C111 16 106 20 102 17 C99 14 102 10 105 12',
+      null, WOOD_E, 3.2));
+    inner.push(R(90, 24, 20, 30, 3, f.wood, WOOD_E, 1));
+    inner.push(E(84, 32, 6, 3, f.ebon));
+    inner.push(E(116, 40, 6, 3, f.ebon));
+    inner.push(E(84, 48, 6, 3, f.ebon));
+    inner.push(E(116, 56, 6, 3, f.ebon));
+    inner.push(R(92, 50, 16, 118, 0, f.wood, WOOD_E, 1));
+    inner.push(R(94, 50, 12, 122, 1, f.ebon));
 
     inner.push(node('path', { d: body, fill: f.wood, stroke: WOOD_E, 'stroke-width': 1.6 }));
     inner.push(node('path', { d: body, fill: 'none', stroke: INK_DIM, 'stroke-width': 0.8,
       'stroke-dasharray': '3 2', 'stroke-opacity': 0.6,
-      transform: 'translate(100 282) scale(0.93) translate(-100 -282)' }));
+      transform: 'translate(100 279) scale(0.92) translate(-100 -279)' }));
 
-    inner.push(P('M80 240 Q76 258 80 276 Q84 284 80 292', null, EBON, 2.6));
-    inner.push(P('M120 240 Q124 258 120 276 Q116 284 120 292', null, EBON, 2.6));
-    inner.push(P('M86 262 L114 262 L112 276 L88 276 Z', f.skin, SKIN_E, 0.9));
-    inner.push(P('M96 340 L104 340 L102 386 L98 386 Z', EBON));
+    inner.push(P('M84 252 Q80 270 84 288 Q88 296 84 306', null, EBON, 2.6));
+    inner.push(P('M116 252 Q120 270 116 288 Q112 296 116 306', null, EBON, 2.6));
+    inner.push(P('M86 286 L114 286 L112 300 L88 300 Z', f.skin, SKIN_E, 0.9));
+    inner.push(P('M96 338 L104 338 L102 384 L98 384 Z', EBON));
 
     inner.push('<g stroke="' + SIL_E + '" stroke-width="0.9" fill="none">' +
-      L(95, 186, 95, 340, SIL_E, 0.9) + L(98.5, 186, 98.5, 340, SIL_E, 0.9) +
-      L(101.5, 186, 101.5, 340, SIL_E, 0.9) + L(105, 186, 105, 340, SIL_E, 0.9) + '</g>');
+      L(95, 170, 95, 338, SIL_E, 0.9) + L(98.5, 170, 98.5, 338, SIL_E, 0.9) +
+      L(101.5, 170, 101.5, 338, SIL_E, 0.9) + L(105, 170, 105, 338, SIL_E, 0.9) + '</g>');
 
-    inner.push(L(100, 388, 100, 408, SIL_E, 3));
-    inner.push(C(100, 410, 3.5, EBON));
+    inner.push(L(100, 398, 100, 414, SIL_E, 3));
+    inner.push(C(100, 416, 3.5, EBON));
 
-    inner.push(bow(f, 166, 30, 320, -6, 170, 200));
+    inner.push(bow(f, 162, 40, 330, -4, 165, 200));
     return wrap('0 0 200 420', 'Cello diagram', f, inner.join(''));
   }
 

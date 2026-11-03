@@ -213,10 +213,10 @@
   function doubleBass() {
     var f = fills('double-bass');
     var inner = [];
-    var body = 'M100 196 C78 196 70 206 68 222 C67 234 74 242 78 252 C70 262 62 272 62 290 ' +
-      'C62 304 46 316 46 344 C46 380 68 404 100 404 C132 404 154 380 154 344 ' +
-      'C154 316 138 304 138 290 C138 272 130 262 122 252 C126 242 133 234 132 222 ' +
-      'C130 206 122 196 100 196 Z';
+    var body = 'M100 160 C80 160 64 168 58 186 C52 204 56 222 68 238 C74 250 70 262 66 274 ' +
+      'C66 286 36 298 34 326 C32 364 62 398 100 398 C138 398 168 364 166 326 ' +
+      'C164 298 134 286 134 274 C130 262 126 250 126 238 C144 222 148 204 142 186 ' +
+      'C136 168 120 160 100 160 Z';
 
     inner.push(P('M100 18 C92 18 88 12 90 6 C92 0 104 0 108 8 C111 14 106 18 102 15', null, WOOD_E, 3));
     inner.push(R(88, 14, 24, 36, 3, f.wood, WOOD_E, 1));
@@ -228,9 +228,9 @@
     inner.push(R(95, 50, 10, 160, 1, f.ebon));
 
     inner.push(node('path', { d: body, fill: f.wood, stroke: WOOD_E, 'stroke-width': 1.6 }));
-    inner.push(P('M80 290 Q76 310 80 330 Q84 340 80 350', null, EBON, 2.6));
-    inner.push(P('M120 290 Q124 310 120 330 Q116 340 120 350', null, EBON, 2.6));
-    inner.push(P('M86 300 L114 300 L112 314 L88 314 Z', f.skin, SKIN_E, 0.9));
+    inner.push(P('M84 288 Q80 306 84 324 Q88 332 84 342', null, EBON, 2.6));
+    inner.push(P('M116 288 Q120 306 116 324 Q112 332 116 342', null, EBON, 2.6));
+    inner.push(P('M86 322 L114 322 L112 336 L88 336 Z', f.skin, SKIN_E, 0.9));
     inner.push(P('M94 350 L106 350 L104 390 L96 390 Z', EBON));
 
     inner.push('<g stroke="' + SIL_E + '" stroke-width="0.9" fill="none">' +
@@ -238,7 +238,7 @@
       L(101.5, 210, 101.5, 350, SIL_E, 0.9) + L(105, 210, 105, 350, SIL_E, 0.9) + '</g>');
 
     inner.push(L(100, 404, 100, 416, SIL_E, 3));
-    inner.push(bow(f, 166, 70, 330, -3, 168, 200));
+    inner.push(bow(f, 166, 70, 165, -3, 168, 200));
     return wrap('0 0 200 420', 'Double bass diagram', f, inner.join(''));
   }
 

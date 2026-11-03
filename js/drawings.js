@@ -122,9 +122,9 @@
   /* Violin and viola share the fiddle construction. */
   function fiddle(id, aria, sx, sy, bodyFill) {
     var f = fills(id);
-    var body = 'M70 150 Q45 155 42 185 Q40 210 55 225 Q65 235 62 250 Q60 265 55 275 ' +
+    var body = 'M73 150 Q48 155 45 185 Q43 210 58 225 Q65 235 62 250 Q60 265 55 275 ' +
       'Q35 290 38 320 Q42 350 70 355 L130 355 Q158 350 162 320 Q165 290 145 275 ' +
-      'Q140 265 138 250 Q135 235 145 225 Q160 210 158 185 Q155 155 130 150 Z';
+      'Q140 265 138 250 Q135 235 142 225 Q157 210 155 185 Q152 155 127 150 Z';
     var pivot = 'translate(100 252) scale(' + sx + ' ' + sy + ') translate(-100 -252)';
     var inner = [];
 

@@ -252,11 +252,11 @@
     out.push(Graphics.instrumentSVG(inst.id));
     out.push(Graphics.hotspotOverlay(inst.id, APP.tier));
     out.push('</div>');
+    out.push('</div>');
     if (typeof window !== 'undefined' && window.PHOTO_CREDITS && window.PHOTO_CREDITS[inst.id]) {
-      out.push('<p class="photo-credit" style="text-align:center;font-size:var(--fs-small);color:var(--text-muted);margin:var(--sp-2) 0 0">',
+      out.push('<p class="photo-credit" style="text-align:center;font-size:var(--fs-small);color:var(--text-muted);margin:var(--sp-2) 0 var(--sp-4)">',
         'Photo: ', window.PHOTO_CREDITS[inst.id], '</p>');
     }
-    out.push('</div>');
 
     /* Hero title band */
     out.push('<div class="detail-section" style="padding-top:var(--sp-3)">');

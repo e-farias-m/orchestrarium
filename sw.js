@@ -1,4 +1,4 @@
-const CACHE = 'orchestrarium-v15';
+const CACHE = 'orchestrarium-v16';
 const PRECACHE = [
   '/',
   '/index.html',

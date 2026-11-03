@@ -168,7 +168,7 @@
 
   /* Viola: deeper C-bouts, larger body, darker spruce/maple tone. */
   function viola() {
-    return fiddle('viola', 'Viola diagram', 1.12, 1.1, fills('viola').wood2);
+    return fiddle('viola', 'Viola diagram', 1.1, 1.1, fills('viola').wood2);
   }
 
   function cello() {

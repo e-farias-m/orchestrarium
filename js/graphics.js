@@ -47,6 +47,7 @@
   var REAL_MEDIA = {
     trumpet: 'svg', 'french-horn': 'svg', trombone: 'svg', tuba: 'svg',
     cello: 'jpg',
+    bassoon: 'jpg',
   };
 
   /* --- SVG for a specific instrument --- */

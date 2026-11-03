@@ -27,6 +27,8 @@
     _samples: {},
     _current: null,
     _currentStems: [],
+    _currentNodes: [],
+    _playToken: 0,
   };
 
   /* --- Context bootstrap (lazy, on first user gesture) --- */
@@ -80,8 +82,9 @@
   }
 
   /* --- Strings: sawtooth through lowpass, slow bow attack --- */
-  function playStrings(rootMidi, duration) {
+  function playStrings(rootMidi, duration, nodes) {
     var ctx = ensureCtx(); if (!ctx) return;
+    if (!nodes) nodes = [];
     var t0 = ctx.currentTime + 0.02;
     var notes = [0, 4, 7, 12]; /* major arpeggio */
     for (var i = 0; i < notes.length; i++) {
@@ -104,12 +107,14 @@
       filter.connect(gain); gain.connect(Audio.master);
       osc.start(start); osc2.start(start);
       osc.stop(start + dur + 0.1); osc2.stop(start + dur + 0.1);
+      nodes.push(osc, osc2);
     }
   }
 
   /* --- Woodwind (flute-ish): sine + slight breath noise --- */
-  function playWoodwind(rootMidi, duration) {
+  function playWoodwind(rootMidi, duration, nodes) {
     var ctx = ensureCtx(); if (!ctx) return;
+    if (!nodes) nodes = [];
     var t0 = ctx.currentTime + 0.02;
     var notes = [0, 2, 4, 7, 12];
     for (var i = 0; i < notes.length; i++) {
@@ -122,12 +127,14 @@
       env(gain, start, 0.04, 0.05, 0.4, 0.15, 0.3, dur);
       osc.connect(gain); gain.connect(Audio.master);
       osc.start(start); osc.stop(start + dur + 0.05);
+      nodes.push(osc);
     }
   }
 
   /* --- Brass: square with bright attack and raucous harmonics --- */
-  function playBrass(rootMidi, duration) {
+  function playBrass(rootMidi, duration, nodes) {
     var ctx = ensureCtx(); if (!ctx) return;
+    if (!nodes) nodes = [];
     var t0 = ctx.currentTime + 0.02;
     var notes = [0, 4, 7, 12, 7];
     for (var i = 0; i < notes.length; i++) {
@@ -144,6 +151,7 @@
       env(gain, start, 0.03, 0.08, 0.35, 0.14, 0.18, dur);
       osc.connect(filter); filter.connect(gain); gain.connect(Audio.master);
       osc.start(start); osc.stop(start + dur + 0.05);
+      nodes.push(osc);
     }
   }
 
@@ -156,8 +164,9 @@
     return buf;
   }
 
-  function playPercussion(rootMidi, duration) {
+  function playPercussion(rootMidi, duration, nodes) {
     var ctx = ensureCtx(); if (!ctx) return;
+    if (!nodes) nodes = [];
     var t0 = ctx.currentTime + 0.02;
     var hits = [0, 0.18, 0.42, 0.6];
     for (var i = 0; i < hits.length; i++) {
@@ -173,6 +182,7 @@
       env(ng, start, 0.002, 0.04, 0.0001, 0.05, 0.5, 0.18);
       src.connect(nf); nf.connect(ng); ng.connect(Audio.master);
       src.start(start); src.stop(start + 0.25);
+      nodes.push(src);
 
       /* Pitched thump */
       var osc = ctx.createOscillator();
@@ -183,12 +193,14 @@
       env(og, start, 0.002, 0.06, 0.0001, 0.06, 0.4, 0.22);
       osc.connect(og); og.connect(Audio.master);
       osc.start(start); osc.stop(start + 0.24);
+      nodes.push(osc);
     }
   }
 
   /* --- Other (piano/harp/voice): triangle arpeggio --- */
-  function playOther(rootMidi, duration) {
+  function playOther(rootMidi, duration, nodes) {
     var ctx = ensureCtx(); if (!ctx) return;
+    if (!nodes) nodes = [];
     var t0 = ctx.currentTime + 0.02;
     var notes = [0, 4, 7, 11, 12, 7, 4];
     for (var i = 0; i < notes.length; i++) {
@@ -201,6 +213,7 @@
       env(gain, start, 0.006, 0.2, 0.15, 0.25, 0.3, dur);
       osc.connect(gain); gain.connect(Audio.master);
       osc.start(start); osc.stop(start + dur + 0.1);
+      nodes.push(osc);
     }
   }
 
@@ -211,6 +224,7 @@
     brass: { fn: playBrass, root: 55 },           /* G3 */
     percussion: { fn: playPercussion, root: 43 }, /* G2 */
     voice: { fn: playOther, root: 60 },
+    keyboard: { fn: playOther, root: 60 },
     other: { fn: playOther, root: 60 },
   };
 
@@ -218,14 +232,34 @@
    * Play a synthesized demonstration of an instrument.
    * @param {string} instrumentId
    */
-  function playSynth(instrumentId) {
+  function playSynth(instrumentId, token) {
     var inst = INSTRUMENTS.get(instrumentId);
-    if (!inst) return;
+    if (!inst) return null;
+    if (token == null) {
+      stop();
+      token = ++Audio._playToken;
+    }
+    if (token !== Audio._playToken) return null;
     ensureCtx(); resume();
+    if (token !== Audio._playToken) return null;
     var type = (inst.synth && inst.synth.type) || 'other';
     var voice = SYNTH[type] || SYNTH.other;
-    stop();
-    voice.fn(voice.root, 2.4);
+    Audio._currentNodes = [];
+    voice.fn(voice.root, 2.4, Audio._currentNodes);
+    var nodes = Audio._currentNodes.slice();
+    var handle = {
+      type: 'synth',
+      nodes: nodes,
+      src: { stop: function () { nodes.forEach(function (n) { try { n.stop(0); } catch (e) {} }); } },
+      gain: null,
+    };
+    if (token !== Audio._playToken) {
+      try { handle.src.stop(); } catch (e) {}
+      return null;
+    }
+    Audio._current = handle;
+    Audio._currentType = 'synth';
+    return handle;
   }
 
   /* ================================================================
@@ -284,16 +318,24 @@
    * @returns {Promise}
    */
   function playSample(instrumentId) {
-    ensureCtx(); resume();
     stop();
+    var token = ++Audio._playToken;
+    ensureCtx(); resume();
+    if (token !== Audio._playToken) return Promise.resolve(null);
     return loadSample(instrumentId).then(function (buf) {
+      if (token !== Audio._playToken) return null;
       var node = playBuffer(buf, Audio.ctx.currentTime + 0.02, 0.9);
+      if (token !== Audio._playToken) {
+        try { node.src.stop(); } catch (e) {}
+        return null;
+      }
       Audio._current = node;
       Audio._currentType = 'sample';
       return node;
     }).catch(function () {
+      if (token !== Audio._playToken) return null;
       /* No sample asset yet — fall back to synthesis */
-      playSynth(instrumentId);
+      return playSynth(instrumentId, token);
     });
   }
 
@@ -423,15 +465,24 @@
      PLAYBACK CONTROL
      ================================================================ */
   function stop() {
-    if (Audio._current && Audio._current.src) {
-      /* Web Audio buffer source */
-      try { Audio._current.src.stop(); } catch (e) {}
-    } else if (Audio._current && Audio._current.pause) {
-      /* native <audio> element */
-      try { Audio._current.pause(); Audio._current.currentTime = 0; } catch (e) {}
+    var cur = Audio._current;
+    /* Invalidate any in-flight sample loads so a stale .then can't
+       resurrect audio after the user (or a new request) stopped it. */
+    Audio._playToken = (Audio._playToken || 0) + 1;
+    if (cur) {
+      /* Web Audio buffer source handle (sample or synth) */
+      if (cur.src && typeof cur.src.stop === 'function') {
+        try { cur.src.stop(0); } catch (e) {}
+      } else if (typeof cur.pause === 'function') {
+        /* native <audio> element (excerpt) */
+        try { cur.pause(); cur.currentTime = 0; } catch (e) {}
+      } else if (typeof cur.stop === 'function') {
+        try { cur.stop(); } catch (e) {}
+      }
     }
     Audio._current = null;
     Audio._currentType = null;
+    Audio._currentNodes = [];
   }
 
   function stopAll() {

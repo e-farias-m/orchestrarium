@@ -4,7 +4,7 @@
 
 ## Features
 
-- **Tiered for K-8** — three grade bands (Little Kids, Explorers, Big Kids) adjust vocabulary, hotspot density, and fact count via a `data-tier` attribute.
+- **Tiered for K-8** — three skill levels (Beginner, Intermediate, Advanced) adjust vocabulary, hotspot density, and fact count via a `data-tier` attribute.
 - **27 instruments** across five families: strings, woodwinds, brass, percussion, and other.
 - **Interactive anatomy** — tap hotspots on procedurally generated SVG diagrams with DK Eyewitness-style leader lines and bite-size fact nuggets.
 - **Real audio** — CC BY-SA 3.0 Philharmonia Orchestra samples, CC0 VSCO 2: Community Edition samples, plus a Web Audio synthesis fallback for instruments without a recording.

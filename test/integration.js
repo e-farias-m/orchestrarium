@@ -102,9 +102,9 @@ console.log('\nIntegration smoke test');
 /* Boot lands on welcome (no tier saved) */
 ok(APP.screen === 'welcome', 'boots to welcome with no saved tier');
 ok(screenHtml().indexOf('tier-picker') !== -1, 'welcome renders tier picker');
-ok(screenHtml().indexOf('Little Kids') !== -1, 'welcome shows tier names');
-ok(screenHtml().indexOf('welcome-lang-toggle') !== -1, 'welcome has inline language toggle');
-ok(screenHtml().indexOf('data-action="set-lang"') !== -1, 'welcome language toggle is wired');
+ok(screenHtml().indexOf('Beginner') !== -1, 'welcome shows tier names');
+ok(screenHtml().indexOf('theme-toggle') !== -1, 'welcome has language toggle');
+ok(screenHtml().indexOf('data-action="toggle-language"') !== -1, 'welcome language toggle is wired');
 
 /* Simulate picking tier 2 */
 S.render.__simulate = true;
@@ -190,7 +190,7 @@ ok(screenHtml().indexOf('glossary-list') !== -1, 'glossary renders');
 click('nav-settings');
 var shtml = screenHtml();
 ok(shtml.indexOf('settings-list') !== -1, 'settings render');
-ok(shtml.indexOf('English') !== -1 && shtml.indexOf('Português') !== -1, 'settings show languages');
+ok(shtml.indexOf('toggle-language') !== -1, 'settings show language toggle');
 click('nav-credits');
 ok(screenHtml().indexOf('credits-page') !== -1, 'credits render');
 

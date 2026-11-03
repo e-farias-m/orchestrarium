@@ -94,7 +94,7 @@
   --topbar-h: 56px;
 }
 
-/* Tier 1 — Little Kids: bigger everything */
+/* Tier 1 — Beginner: bigger everything */
 [data-tier="1"] {
   --fs-body: 18px;
   --fs-small: 15px;
@@ -105,7 +105,7 @@
   --r-lg: 24px;
 }
 
-/* Tier 3 — Big Kids: denser */
+/* Tier 3 — Advanced: denser */
 [data-tier="3"] {
   --fs-body: 15px;
   --fs-small: 12px;
@@ -117,6 +117,27 @@
 /* --- Reset --- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+/* Language toggle (matches Preludio projects) */
+.theme-toggle {
+  width: 42px; height: 42px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text);
+  background: var(--bg-elevated);
+  border: 1.5px solid #d4cfc6;
+  border-radius: 50%;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { border-color: var(--accent); }
+.theme-toggle:active { transform: scale(0.94); }
 body {
   font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
   font-size: var(--fs-body);
@@ -479,7 +500,8 @@ ul, ol { list-style: none; }
   width: 100%;
   max-width: 340px;
 }
-.detail-diagram svg {
+.detail-diagram svg,
+.detail-diagram img.instrument-img {
   width: 100%;
   height: auto;
   filter: drop-shadow(0 6px 18px rgba(45, 55, 72, 0.12));
@@ -553,9 +575,10 @@ ul, ol { list-style: none; }
   letter-spacing: var(--label-tracking);
   text-transform: uppercase;
   color: var(--text);
-  background: var(--bg-canvas);
-  padding: 2px 6px;
+  background: transparent;
+  padding: 2px 4px;
   border-radius: 4px;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.9), 0 0 4px rgba(255,255,255,0.9);
   white-space: nowrap;
   pointer-events: none;
   z-index: 3;

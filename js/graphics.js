@@ -43,8 +43,15 @@
     ].join('');
   }
 
+  /* --- Real (CC0) instrument diagrams, quoted from Wikimedia Commons / Open Clip Art --- */
+  var REAL_DRAWINGS = { trumpet: true, 'french-horn': true, trombone: true, tuba: true };
+
   /* --- SVG for a specific instrument --- */
   function instrumentSVG(id) {
+    if (REAL_DRAWINGS[id]) {
+      return '<img class="instrument-img" src="images/instruments/' + id + '.svg" ' +
+        'alt="' + (INSTRUMENTS.get(id) ? INSTRUMENTS.get(id).name : id) + ' diagram"/>';
+    }
     var drawings = (typeof window !== 'undefined' && window.ORCH_DRAWINGS) || null;
     if (drawings && drawings[id]) return drawings[id]();
     var inst = INSTRUMENTS.get(id);

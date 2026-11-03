@@ -10,7 +10,7 @@
   'use strict';
 
   var TIER_KEY = 'orchestrariumTier';
-  var TIER_NAMES = { 1: 'Little Kids', 2: 'Explorers', 3: 'Big Kids' };
+  var TIER_NAMES = { 1: 'Beginner', 2: 'Intermediate', 3: 'Advanced' };
   var TIER_AGES = { 1: 'Ages 5–7', 2: 'Ages 8–10', 3: 'Ages 11–14' };
   var TIER_EMOJI = { 1: '🧸', 2: '🔎', 3: '🎓' };
 
@@ -64,6 +64,8 @@
       out.push('<button class="topbar-back" data-action="back" aria-label="', t('Back'), '">←</button>');
     }
     out.push('<div class="topbar-title">', esc(title), '</div>');
+    out.push('<button class="theme-toggle" data-action="toggle-language" title="', t('Language'), '" style="width:36px;height:36px;font-size:13px;margin-right:var(--sp-2)">',
+      getLang() === 'pt' ? 'PT' : getLang() === 'fr' ? 'FR' : 'EN', '</button>');
     out.push('<button class="topbar-action" data-action="nav-settings" aria-label="', t('Settings'), '">⚙</button>');
     out.push('</header>');
     return out.join('');
@@ -98,9 +100,9 @@
   function renderWelcome() {
     var lang = getLang();
     var out = ['<div class="welcome">'];
-    out.push('<div class="welcome-lang-toggle" role="group" aria-label="', t('Language'), '">');
-    out.push('<button class="lang-pill', lang === 'en' ? ' active' : '', '" data-action="set-lang" data-lang="en" aria-pressed="', lang === 'en' ? 'true' : 'false', '">', t('English'), '</button>');
-    out.push('<button class="lang-pill', lang === 'pt' ? ' active' : '', '" data-action="set-lang" data-lang="pt" aria-pressed="', lang === 'pt' ? 'true' : 'false', '">', t('Português (Brasil)'), '</button>');
+    out.push('<div style="display:flex;justify-content:flex-end;width:100%;padding:var(--sp-4)">');
+    out.push('<button class="theme-toggle" data-action="toggle-language" title="', t('Language'), '">',
+      getLang() === 'pt' ? 'PT' : getLang() === 'fr' ? 'FR' : 'EN', '</button>');
     out.push('</div>');
     out.push('<img class="welcome-logo" src="icon.svg" alt="">');
     out.push('<h1 class="welcome-title">', t('Welcome!'), '</h1>');
@@ -472,10 +474,8 @@
     out.push('<span class="settings-value">', esc(t(lang === 'pt' ? 'Português (Brasil)' : 'English')), '</span>');
     out.push('</div>');
     out.push('<div class="settings-item">');
-    out.push('<button class="audio-btn secondary" data-action="set-lang" data-lang="en"',
-      lang === 'en' ? ' disabled' : '', ' style="flex:1">', t('English'), '</button>');
-    out.push('<button class="audio-btn secondary" data-action="set-lang" data-lang="pt"',
-      lang === 'pt' ? ' disabled' : '', ' style="flex:1">', t('Português (Brasil)'), '</button>');
+    out.push('<button class="theme-toggle" data-action="toggle-language" title="', t('Language'), '" style="width:42px;height:42px">',
+      getLang() === 'pt' ? 'PT' : getLang() === 'fr' ? 'FR' : 'EN', '</button>');
     out.push('</div>');
 
     /* Level */
@@ -538,6 +538,8 @@
       'Per-section multitrack stems extracted from the original session recording.</p>');
     out.push('<p style="margin-top:var(--sp-3)">',
       'Celesta and voice use built-in synthesized tones.</p>');
+    out.push('<p style="margin-top:var(--sp-3)">',
+      'Brass instrument diagrams: Open Clip Art Library (CC0) — ArtFavor and Gerald G.</p>');
     out.push('<p style="margin-top:var(--sp-3)">',
       'Built with the Web Audio API. No tracking, no ads.</p>');
     out.push('<button class="audio-btn secondary" data-action="back" style="margin-top:var(--sp-5);max-width:200px">',
@@ -666,6 +668,13 @@
         setLang(target.getAttribute('data-lang'));
         render();
         break;
+      case 'toggle-language': {
+        var curLang = getLang();
+        var nextLang = curLang === 'en' ? 'pt' : curLang === 'pt' ? 'fr' : 'en';
+        setLang(nextLang);
+        render();
+        break;
+      }
 
       case 'toggle-mute':
         Audio.setMuted(!Audio.muted);
@@ -690,7 +699,7 @@
         break;
       }
       case 'mixer-stop':
-        Audio.stop();
+        Audio.stopAll();
         break;
       case 'mixer-toggle': {
         var url = target.getAttribute('data-stem-url');

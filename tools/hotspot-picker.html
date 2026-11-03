@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hotspot Picker — Orchestrarium</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 16px; background:#f5f1eb; color:#2d3748; }
+  h1 { font-size: 20px; margin-bottom: 8px; }
+  .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+  #stage { position:relative; display:inline-block; border:2px solid #c4bdb3; background:#fff; }
+  #img { display:block; max-width:90vw; max-height:70vh; }
+  #cross { position:absolute; pointer-events:none; left:0; top:0; width:100%; height:100%; }
+  #cross::before, #cross::after { content:''; position:absolute; background:rgba(192,86,33,0.6); }
+  #cross::before { left:0; right:0; top:50%; height:1px; }
+  #cross::after { top:0; bottom:0; left:50%; width:1px; }
+  .dot { position:absolute; width:12px; height:12px; border-radius:50%; background:#c05621; border:2px solid #fff; transform:translate(-50%,-50%); pointer-events:none; }
+  .label { position:absolute; transform:translate(8px,-50%); font-size:12px; font-weight:700; color:#2d3748; background:rgba(255,255,255,0.8); padding:1px 4px; border-radius:3px; white-space:nowrap; pointer-events:none; }
+  table { border-collapse:collapse; margin-top:12px; background:#fff; }
+  th,td { border:1px solid #c4bdb3; padding:4px 8px; font-size:13px; }
+  button { padding:6px 12px; border-radius:8px; border:1px solid #c4bdb3; background:#fff; cursor:pointer; }
+  button.primary { background:#c05621; color:#fff; border-color:#c05621; }
+  textarea { width:100%; height:160px; font-family:monospace; font-size:12px; }
+  .hint { font-size:13px; color:#718096; }
+</style>
+</head>
+<body>
+<h1>Hotspot Picker</h1>
+<p class="hint">Load an instrument photo, hover to see x/y %, click to record a hotspot. Then copy the JSON into <code>instruments.js</code>.</p>
+<div class="row">
+  <input type="file" id="file" accept="image/*">
+  <input type="text" id="partId" placeholder="part id (e.g. bell)" size="18">
+  <button class="primary" id="clear">Clear all</button>
+  <button id="export">Copy JSON</button>
+</div>
+<div id="stage">
+  <img id="img" alt="">
+  <div id="cross"></div>
+</div>
+<p id="coords" class="hint">x: — , y: —</p>
+<table id="tbl"><thead><tr><th>#</th><th>id</th><th>x</th><th>y</th></tr></thead><tbody></tbody></table>
+<textarea id="out" readonly></textarea>
+
+<script>
+const img=document.getElementById('img');
+const stage=document.getElementById('stage');
+const coords=document.getElementById('coords');
+const tbody=document.querySelector('#tbl tbody');
+const out=document.getElementById('out');
+let hotspots=[];
+
+document.getElementById('file').addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return;
+  img.src=URL.createObjectURL(f);
+});
+
+stage.addEventListener('mousemove', e=>{
+  const r=img.getBoundingClientRect();
+  const x=((e.clientX-r.left)/r.width*100);
+  const y=((e.clientY-r.top)/r.height*100);
+  coords.textContent='x: '+x.toFixed(1)+' , y: '+y.toFixed(1);
+});
+
+stage.addEventListener('click', e=>{
+  const r=img.getBoundingClientRect();
+  const x=+((e.clientX-r.left)/r.width*100).toFixed(1);
+  const y=+((e.clientY-r.top)/r.height*100).toFixed(1);
+  const id=document.getElementById('partId').value.trim() || ('part'+(hotspots.length+1));
+  hotspots.push({id,x,y});
+  render();
+});
+
+function render(){
+  stage.querySelectorAll('.dot,.label').forEach(n=>n.remove());
+  const tbodyEl=document.querySelector('#tbl tbody');
+  tbodyEl.innerHTML='';
+  hotspots.forEach((h,i)=>{
+    const dot=document.createElement('div'); dot.className='dot';
+    dot.style.left=h.x+'%'; dot.style.top=h.y+'%';
+    const lab=document.createElement('div'); lab.className='label';
+    lab.style.left=h.x+'%'; lab.style.top=h.y+'%';
+    lab.textContent=h.id;
+    stage.appendChild(dot); stage.appendChild(lab);
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td>'+(i+1)+'</td><td>'+h.id+'</td><td>'+h.x+'</td><td>'+h.y+'</td>';
+    tbodyEl.appendChild(tr);
+  });
+  out.value=JSON.stringify(hotspots,null,2);
+}
+
+document.getElementById('clear').addEventListener('click',()=>{ hotspots=[]; render(); });
+document.getElementById('export').addEventListener('click',()=>{ navigator.clipboard.writeText(out.value); alert('Copied'); });
+</script>
+</body>
+</html>
+EOF
+echo created

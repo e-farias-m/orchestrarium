@@ -247,7 +247,7 @@ ok(!!Graphics, 'Graphics exposes API');
 var svg = Graphics.instrumentSVG('violin');
 ok(svg.indexOf('<svg') === 0 && svg.indexOf('</svg>') !== -1, 'violin SVG well-formed');
 ok(svg.indexOf('aria-label') !== -1, 'violin SVG has aria-label');
-ok(Graphics.instrumentSVG('cello').indexOf('<svg') === 0, 'cello SVG renders');
+ok(/^<(svg|img)/.test(Graphics.instrumentSVG('cello')), 'cello diagram renders');
 ok(Graphics.instrumentIcon('violin', 64).indexOf('<svg') === 0, 'violin icon renders');
 ok(Graphics.instrumentIcon('unknown-xyz', 64).indexOf('<svg') === 0, 'unknown id → family icon');
 ok(Graphics.familyIcon('brass', 40).indexOf('<svg') === 0, 'family icon renders');

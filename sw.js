@@ -1,4 +1,4 @@
-const CACHE = 'orchestrarium-v18';
+const CACHE = 'orchestrarium-v20';
 const PRECACHE = [
   '/',
   '/index.html',
@@ -16,6 +16,7 @@ const PRECACHE = [
   '/images/instruments/french-horn.svg',
   '/images/instruments/trombone.svg',
   '/images/instruments/tuba.svg',
+  '/images/instruments/cello.jpg',
 ];
 
 self.addEventListener('install', (e) => {

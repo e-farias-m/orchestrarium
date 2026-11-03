@@ -541,6 +541,8 @@
     out.push('<p style="margin-top:var(--sp-3)">',
       'Brass instrument diagrams: Open Clip Art Library (CC0) — ArtFavor and Gerald G.</p>');
     out.push('<p style="margin-top:var(--sp-3)">',
+      'Cello photograph: The Metropolitan Museum of Art (open access).</p>');
+    out.push('<p style="margin-top:var(--sp-3)">',
       'Built with the Web Audio API. No tracking, no ads.</p>');
     out.push('<button class="audio-btn secondary" data-action="back" style="margin-top:var(--sp-5);max-width:200px">',
       t('Back'), '</button>');

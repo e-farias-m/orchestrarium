@@ -252,6 +252,10 @@
     out.push(Graphics.instrumentSVG(inst.id));
     out.push(Graphics.hotspotOverlay(inst.id, APP.tier));
     out.push('</div>');
+    if (typeof window !== 'undefined' && window.PHOTO_CREDITS && window.PHOTO_CREDITS[inst.id]) {
+      out.push('<p class="photo-credit" style="text-align:center;font-size:var(--fs-small);color:var(--text-muted);margin:var(--sp-2) 0 0">',
+        'Photo: ', window.PHOTO_CREDITS[inst.id], '</p>');
+    }
     out.push('</div>');
 
     /* Hero title band */

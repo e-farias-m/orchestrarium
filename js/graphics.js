@@ -50,6 +50,12 @@
     bassoon: 'jpg',
   };
 
+  var PHOTO_CREDITS = {
+    cello: 'The Metropolitan Museum of Art (open access)',
+    bassoon: 'The Metropolitan Museum of Art (open access)',
+  };
+  if (typeof window !== 'undefined') window.PHOTO_CREDITS = PHOTO_CREDITS;
+
   /* --- SVG for a specific instrument --- */
   function instrumentSVG(id) {
     var ext = REAL_MEDIA[id];

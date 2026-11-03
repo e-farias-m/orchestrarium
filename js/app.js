@@ -284,6 +284,12 @@
         '</button>'
       );
     }
+    out.push(
+      '<button class="audio-btn secondary" data-action="audio-stop">',
+      '<span class="audio-btn-icon">⏹️</span>',
+      '<span>', t('Stop'), '</span>',
+      '</button>'
+    );
     out.push('</div>');
     out.push('</div>');
 
@@ -699,6 +705,9 @@
       case 'play-excerpt':
         Audio.playStem(target.getAttribute('data-id'));
         markPlaying(target);
+        break;
+      case 'audio-stop':
+        Audio.stopAll();
         break;
 
       case 'mixer-play': {

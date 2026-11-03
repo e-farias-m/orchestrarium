@@ -49,11 +49,13 @@
     cello: 'jpg',
     bassoon: 'jpg',
     violin: 'jpg',
+    'double-bass': 'jpg',
   };
 
   var PHOTO_CREDITS = {
     cello: 'The Metropolitan Museum of Art (open access)',
     bassoon: 'The Metropolitan Museum of Art (open access)',
+    'double-bass': 'Andrew Kepert via Wikipedia (CC BY-SA)',
   };
   if (typeof window !== 'undefined') window.PHOTO_CREDITS = PHOTO_CREDITS;
 

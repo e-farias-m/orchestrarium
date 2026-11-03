@@ -48,6 +48,7 @@
     trumpet: 'svg', 'french-horn': 'svg', trombone: 'svg', tuba: 'svg',
     cello: 'jpg',
     bassoon: 'jpg',
+    violin: 'jpg',
   };
 
   var PHOTO_CREDITS = {

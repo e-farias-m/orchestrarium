@@ -151,13 +151,6 @@
           tiers: [3],
         },
         {
-          id: 'endpin', x: 50, y: 86,
-          label: 'Endpin', labelPt: 'Espigão',
-          desc: 'A small button at the very bottom that holds the tailpiece in place.',
-          descPt: 'Um pequeno botão na parte mais baixa que mantém o saltarelho no lugar.',
-          tiers: [3],
-        },
-        {
           id: 'bow', x: 82, y: 45,
           label: 'Bow', labelPt: 'Arco',
           desc: 'A stick strung with horsehair, coated in rosin to grip the strings. The player draws it across the strings to make them vibrate.',
